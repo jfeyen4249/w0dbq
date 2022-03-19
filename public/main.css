@@ -85,6 +85,28 @@ a:hover {
 .item6 { grid-area: r1; }
 
 
+.home-railRoad-container {
+    display: grid;
+    grid-template-areas:
+      'top  top  top top'
+      'main main main main'
+      'left middle right r1';
+    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 0px 40vh 1fr;
+    /* background-color: #2196F3; */
+    padding: 5px;
+  }
+
+  .home-railRoad-container > div {
+    /* background-color: rgba(255, 255, 255, 0.8); */
+    text-align: center;
+    padding: 5px 5px;
+    line-height: normal;
+  
+  }
+
+
 .home-grid-container {
   display: grid;
   grid-template-areas:
@@ -97,6 +119,7 @@ a:hover {
   /* background-color: #2196F3; */
   padding: 10px;
 }
+
 
 .home-grid-container > div {
   /* background-color: rgba(255, 255, 255, 0.8); */

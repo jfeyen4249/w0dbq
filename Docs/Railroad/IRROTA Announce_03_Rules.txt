@@ -1,0 +1,8 @@
+Rules: 
+1. Activators cannot use any terrestrial repeaters. Communications must be by HF or VHF/UHF simplex.
+2. Activators can use any suitable mode, such as SSB, FT-8, CW, PSK-31, etc. 
+3. As usual, activators must abide by FCC rules.
+4. Activators are cautioned to seek permission when operating from any train depot that is now a museum, a private business entity, on private land, or part of an active railroad station. However, public visibility is always an asset and an opportunity to represent amateur radio to the public.
+5. Activators will exercise caution when operating from any of the sites mentioned above.
+6. When claiming a certificate, your contacts must be uploaded on the club's website with the name of the site from which you operated.
+7. The club will post on its website one or two pictures from each of your activations. However, they must show the depot from which you operated. In some cases, the name of the railroad station/depot may still be visible on the building. In which case try to capture the name in the pictures you submit.
