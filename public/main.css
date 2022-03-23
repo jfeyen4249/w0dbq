@@ -76,32 +76,3 @@ a:hover {
 
 
 
-/* ____________________________________________________________ Homepage CSS Grid_____________________________________________________ */
-.item1 { grid-area: top; }
-.item2 { grid-area: main; }
-.item3 { grid-area: left; }
-.item4 { grid-area: middle; }
-.item5 { grid-area: right; }
-.item6 { grid-area: r1; }
-
-
-.home-grid-container {
-  display: grid;
-  grid-template-areas:
-    'top  top  top top'
-    'main main main main'
-    'left middle right r1';
-  gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 60px 40vh 1fr;
-  /* background-color: #2196F3; */
-  padding: 10px;
-}
-
-.home-grid-container > div {
-  /* background-color: rgba(255, 255, 255, 0.8); */
-  text-align: center;
-  padding: 5px 5px;
-  line-height: normal;
-
-}
