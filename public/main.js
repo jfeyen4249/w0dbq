@@ -56,7 +56,3 @@ menubar.innerHTML = `
 `
 
 document.getElementById('footer').innerText = "© 2022 Great River Amateur Radio Club (W0DBQ)"
-
-
-
-
