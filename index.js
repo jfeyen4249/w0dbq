@@ -9,7 +9,7 @@ const path = require('path');
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 dotenv.config({ path: './.env'});
-const port = 80
+
 
 var connection = mysql.createConnection({
     host     : process.env.db_host,
