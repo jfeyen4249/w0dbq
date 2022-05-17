@@ -1,87 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>W0DBQ</title>
-    <script src="./public/main.js" defer></script>
-    <script src="/menu.js" defer></script>
-    <script src="/main.js" defer></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="js/handlebars-v4.7.7.js"></script>    
-    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>   
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="./public/main.css">
-    <link rel="stylesheet" href="/main.css">
-    <link rel="stylesheet" href="/grids.css">
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+	
+	<title>W0DBQ: Home</title>
+
+	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
+	
+	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<script src="https://kit.fontawesome.com/2180f850ac.js" crossorigin="anonymous"></script>
+	<script src="/menu.js" defer></script>
+	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="/assets/css/main.css">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="assets/js/html5shiv.js"></script>
+	<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
 </head>
-<body>
-    
 
-    <div class="main" id="main">
-        <div class="appmenu" id="appmenu"></div>
+<body class="home">
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
+		<div class="container" id="nav-bar">
+			<div class="navbar-header">
+				<!-- Button for smallest screens -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+				<a class="navbar-brand" href="/"><img src="/assets/images/logo.png" alt="Progressus HTML5 template"></a>
+			</div>
+			<div class="navbar-collapse collapse">
+				
+			</div><!--/.nav-collapse -->
+		</div>
+	</div> 
+	<!-- /.navbar -->
 
-        <div class="home-grid-container">
-            <div class="item1"></div>
-            <div class="item2 boxes">
-                
-                
-                
-            </div>
-            <div class="item3 boxes">
-                <h3>Testing Dates</h3>
-                <p class="text-left">All tests are held at the Red Cross Building, 2400 Asbury Rd Dubuque Iowa</p>
-                <p>Test Dates</p>
-                <ul>
-                    <li class="text-left">February 6th, 2021</li>
-                    <li class="text-left">May 8th, 2021</li>
-                    <li class="text-left">August 7th, 2021</li>
-                    <li class="text-left">December 11th,2021</li>
-                </ul>
-                <p class="text-left">Contact Ed (W0OIC) for more information</p>
-            </div> 
+	<!-- Header -->
+	<header id="head">
+		<div class="container">
+			<div class="row">
+				<h1 class="lead">Attened a Club Meeting Online</h1>
+				<p class="tagline">Club meeting are broadcast on Zoom. Use the button below to join the meeting</a></p>
+				<p><a class="btn btn-action btn-lg" role="button">Zoom Meeting</a></p>
+			</div>
+		</div>
+	</header>
+	<!-- /Header -->
+
+	<!-- Intro -->
+	{{!-- <div class="container text-center">
+		<br> <br>
+		<h2 class="thin">The best place to tell people why they are here</h2>
+		<p class="text-muted">
+			The difference between involvement and commitment is like an eggs-and-ham breakfast:<br> 
+			the chicken was involved; the pig was committed.
+		</p>
+	</div> --}}
+	<!-- /Intro-->
+		
+	<!-- Highlights - jumbotron -->
+	<div class="jumbotron top-space">
+		<div class="container">
+			
+			<h3 class="text-center thin">Club Information</h3>
+			
+			<div class="row">
+				<div class="col-md-3 col-sm-6 highlight">
+					<div class="h-caption"><h4><i class="fa-solid fa-walkie-talkie"></i>Club Nets</h4></div>
+					<div class="h-body text-center">
+						<ul>
+							<li>Coffee Net 9:15am</li>
+							<li>ARES Net Tuesday at 7:30pm </li>
+							<li>Club Sunday Night Net at 8:30pm </li>
+							
+						</ul>
+						<p><br><br><a class="btn btn-action btn-lg" role="button" href="/calendar">Find out More</a></p>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6 highlight">
+					<div class="h-caption"><h4><i class="fa-solid fa-pen-clip"></i>Testing</h4></div>
+					<div class="h-body text-center">
+						<p>Testing session are held quarterly the Saturday before the club meeting. The next text will be held on<span id="test-day" class="test-day"> Thursday at 7:30pm</span>. If you have any questions contact ED (W0OIC)</p>
+						<a class="btn btn-action btn-lg" role="button">Contact ED (W0OIC)</a>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6 highlight">
+					<div class="h-caption"><h4><i class="fa-solid fa-tower-broadcast"></i>Repeaters</h4></div>
+					<div class="h-body text-center">
+						<p>The club has two repeaters. One of the being in Dubuque and one in Springbrook IA. The club also has a link site in downtown Dubuque.</p>
+						<br><a class="btn btn-action btn-lg btn-info" role="button" href="/repeater">Learn More</a>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6 highlight">
+					<div class="h-caption"><h4><i class="fa-solid fa-utensils"></i>Lunch Bunch</h4></div>
+					<div class="h-body text-center">
+						<p>Lunch bunch is held every Thursday at 11:30. This week we will be at <br><span class="lunch" id="lunch"></span></p>
+						<br><br><a class="btn btn-action btn-lg btn-info" role="button">Learn More</a>
+					</div>
+				</div>
+			</div> <!-- /row  -->
+		
+		</div>
+	</div>
+
+
+	<footer id="footer" class="top-space">
+		<div class="footer2">
+			<div class="container">
+				<div class="row">
+					
+					
+					<div class="col-md-6 widget">
+						<div class="widget-body">
+							<p class="text-right" id="footer-text">
+								Copyright &copy; 2022, Great River Amateur Radio Club. All rights reserved.
+							</p>
+						</div>
+					</div>
+
+				</div> <!-- /row of widgets -->
+			</div>
+		</div>
+
+	</footer>	
+		
+	<script>
+		fetch('/lunch')
+  		.then(response => response.json())
+  		.then(data => {
+			  document.getElementById('lunch').innerText = data[0].location
+	   });
+
+
+		fetch('/testing')
+  		.then(response => response.text())
+  		.then(data => {
+			var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+			var month = months[data.substring(16,18) - 1]
+			let day = data.substring(19,21)
+			let zero_day = data.substring(19,20)
+			let year = data.substring(11,15)			
+			let day_check = (zero_day == 0) ? day.substring(1,2) : day;
+			
+			function day_s(x) {
+				
+				if(x == 1){
+					return (x + 'st')
+				}else if(x == 2){
+					return (x + 'nd')
+				}else if(x == 3){
+					return (x + 'rd')
+				}else {
+					return (x + 'th')
+				}
+			}
+		
+
+			document.getElementById('test-day').innerText = ` Saturday ${month} ${day_s(day_check)} ${year}`
+	   });
+		
+	</script>
 
 
 
-
-
-            <div class="item4 boxes">
-                <h3>Club Meetings</h3>
-                <p class="text-left">Club Meetings are held the second Monday of every month at 7PM at the Dubuque County Emergency Center</p>
-                <p class="text-left">Club meetings can be watched live on Twitch and previous meeting can be watched on YouTube.</p><br>
-                <button class="btn btn-primary btn-lg">Zoom Meeting</button>
-            </div>
-
-
-            <div class="item5 boxes">
-                <h3>Club Nets</h3>
-                <p>Coffee Net: M-F 9:15AM</p>
-                
-                <p>ARES Net: Tuesday at 7:30 PM</p>
-                
-                <p>Club Net: Sunday at 8 PM</p>
-                
-
-
-            </div>
-            <div class="item6 boxes">
-                <h3>Club Repeaters</h3>
-                <p>Dubuque Repeater</p>
-                <p>RX: 147.240 TX: 147.840</p>
-                <p>PL Tone: 103.5</p>
-
-            </div>
-
-            <div class="item7 boxes">
-                <h3>Club Repeaters</h3>
-                <p>Dubuque Repeater</p>
-                <p>RX: 147.240 TX: 147.840</p>
-                <p>PL Tone: 103.5</p>
-
-            </div>
-        </div>
-        <h6 id="footer" class="footer"></h6>
-    </div>
-    
+	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/assets/js/headroom.min.js"></script>
+	<script src="/assets/js/jQuery.headroom.min.js"></script>
+	<script src="/assets/js/template.js"></script>
 </body>
 </html>

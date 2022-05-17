@@ -9,6 +9,7 @@ const path = require('path');
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 dotenv.config({ path: './.env'});
+const port = 80;
 
 
 var connection = mysql.createConnection({
@@ -49,6 +50,84 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
+app.get('/rules', (req, res) => {
+  res.render('railroad')
+})
+
+app.get('/ares', (req, res) => {
+  res.render('ares')
+})
+
+app.get('/zoom', (req, res) => {
+  res.render('zoom')
+})
+
+app.get('/calendar', (req, res) => {
+  res.render('calendar')
+})
+
+app.get('/getevent', (req, res) => {
+  let id = req.query.id;
+  try {
+    connection.query(`SELECT description from calendar WHERE id=${id}`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
+
+app.get('/getcalendar', (req, res) => {
+  try {
+    connection.query(`SELECT * from calendar`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
+
+app.get('/lunch', (req, res) => {
+  let d = new Date().toISOString();
+  d =  d.substring(0,10)
+
+  try {
+    connection.query(`SELECT location from calendar WHERE start >= ${d} AND type ='Lunch Bunch' order by start ASC LIMIT 1`, function (error, results, fields) {
+      if (error) throw error;
+    
+      res.send(results);
+    });
+
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+app.get('/testing', (req, res) => {
+  let d = new Date().toISOString();
+  d =  d.substring(0,10)
+
+  try {
+    connection.query(`SELECT start from calendar WHERE start >= ${d} AND type ='Testing' order by start ASC LIMIT 1`, function (error, results, fields) {
+      if (error) throw error;
+    
+      res.send(results);
+    });
+
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
