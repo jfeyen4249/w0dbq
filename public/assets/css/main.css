@@ -83,8 +83,6 @@ img.pull-left { margin-right: 10px; }
 	
 	
 /* Calendar */
-
-
 #wrap {
 	width: 1100px;
 	margin: 0 auto;
@@ -153,3 +151,132 @@ img.pull-left { margin-right: 10px; }
 	li {
 		list-style-type: none;
 	}
+
+
+.slowFade {
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+.slowFade .slide img {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+    height: auto;
+    background: #000;
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+    opacity: 0;
+    transform: scale(1.5) rotate(15deg);
+    -webkit-animation: slowFade 15s infinite;
+            animation: slowFade 15s infinite;
+}
+.slowFade .slide:nth-child(3) img {
+    -webkit-animation-delay: 5s;
+            animation-delay: 5s;
+}
+.slowFade .slide:nth-child(2) img {
+    -webkit-animation-delay: 5s;
+            animation-delay: 5s;
+}
+.slowFade .slide:nth-child(1) img {
+    -webkit-animation-delay: 1s;
+            animation-delay: 1s;
+}
+@keyframes slowFade {
+    25% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+    40% {
+        opacity: 0;
+    }
+}
+@-webkit-keyframes slowFade {
+    25% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+    40% {
+        opacity: 0;
+    }
+}
+
+
+
+.card {
+	display: inline-block;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	transition: 0.3s;
+	width: 18%;
+	margin-top: 20px;
+  }
+  
+  .card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  .bod-container {
+	padding: 2px 16px;
+  }
+ .bod {
+	 position: fixed;
+	 bottom: 0;
+	 min-width: 100vw;
+	 text-align: center;
+ }
+  
+
+
+.zoom {
+	color: brown;
+	font-weight: 1000;
+	font-size: 18px;
+}
+
+
+
+
+  .rrgrid-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	background-color: rgba(235, 0, 0, 0.8);
+	border-radius: 15px;
+	padding: 10px;
+	grid-gap: 10px;
+  }
+  .rrgrid-item {
+	background-color: #000;
+	/* border: 3px solid rgba(235, 0, 0, 0.8); */
+	color: #FFFFFF;
+	border-radius: 10px;
+	padding: 0px;
+	font-size: 30px;
+	text-align: center;
+  }
+
+.rrtop-title {
+	top: 0;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+.space {
+	margin-top: 10px;
+}
+
+.rr-btn {
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+

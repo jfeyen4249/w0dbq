@@ -7,6 +7,7 @@
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
 	<title>W0DBQ: Home</title>
+	
 
 	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
 	
@@ -48,24 +49,19 @@
 			<div class="row">
 				<h1 class="lead">Attened a Club Meeting Online</h1>
 				<p class="tagline">Club meeting are broadcast on Zoom. Use the button below to join the meeting</a></p>
-				<p><a class="btn btn-action btn-lg" role="button">Zoom Meeting</a></p>
+				<p><a class="btn btn-action btn-lg" role="button" href="/zoom">Zoom Meeting</a></p>
 			</div>
 		</div>
 	</header>
-	<!-- /Header -->
+	 <!-- /Header -->
 
 	<!-- Intro -->
-	{{!-- <div class="container text-center">
-		<br> <br>
-		<h2 class="thin">The best place to tell people why they are here</h2>
-		<p class="text-muted">
-			The difference between involvement and commitment is like an eggs-and-ham breakfast:<br> 
-			the chicken was involved; the pig was committed.
-		</p>
-	</div> --}}
+	<div class="container text-center">
+		
+	</div>
 	<!-- /Intro-->
 		
-	<!-- Highlights - jumbotron -->
+	<!-- Highlights - jumbotron --> 
 	<div class="jumbotron top-space">
 		<div class="container">
 			
@@ -81,13 +77,13 @@
 							<li>Club Sunday Night Net at 8:30pm </li>
 							
 						</ul>
-						<p><br><br><a class="btn btn-action btn-lg" role="button" href="/calendar">Find out More</a></p>
+						<p><br><br><a class="btn btn-action btn-lg" role="button" href="/about">Find out More</a></p>
 					</div>
 				</div>
 				<div class="col-md-3 col-sm-6 highlight">
 					<div class="h-caption"><h4><i class="fa-solid fa-pen-clip"></i>Testing</h4></div>
 					<div class="h-body text-center">
-						<p>Testing session are held quarterly the Saturday before the club meeting. The next text will be held on<span id="test-day" class="test-day"> Thursday at 7:30pm</span>. If you have any questions contact ED (W0OIC)</p>
+						<p>Testing session are held quarterly the Saturday before the club meeting. The next text will be held on<span id="test-day" class="test-day"></span>. If you have any questions contact ED (W0OIC)</p>
 						<a class="btn btn-action btn-lg" role="button">Contact ED (W0OIC)</a>
 					</div>
 				</div>
@@ -120,7 +116,7 @@
 					<div class="col-md-6 widget">
 						<div class="widget-body">
 							<p class="text-right" id="footer-text">
-								Copyright &copy; 2022, Great River Amateur Radio Club. All rights reserved.
+								Copyright &copy; 2022 Great River Amateur Radio Club. All rights reserved.
 							</p>
 						</div>
 					</div>
@@ -142,15 +138,26 @@
 		fetch('/testing')
   		.then(response => response.text())
   		.then(data => {
+			let dbdate = new Date(data.substring(11,21)).getDay();
+			let a = dbdate + 1;
+			if (a == 7) {
+				a = 0;
+			}
+
+			let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+			let weekday = days[a];
+			console.log(weekday);
+			
+
+
+
 			var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 			var month = months[data.substring(16,18) - 1]
 			let day = data.substring(19,21)
 			let zero_day = data.substring(19,20)
 			let year = data.substring(11,15)			
-			let day_check = (zero_day == 0) ? day.substring(1,2) : day;
-			
+			let day_check = (zero_day == 0) ? day.substring(1,2) : day;	
 			function day_s(x) {
-				
 				if(x == 1){
 					return (x + 'st')
 				}else if(x == 2){
@@ -161,11 +168,17 @@
 					return (x + 'th')
 				}
 			}
-		
-
-			document.getElementById('test-day').innerText = ` Saturday ${month} ${day_s(day_check)} ${year}`
+			document.getElementById('test-day').innerText = ` ${weekday} ${month} ${day_s(day_check)} ${year}`
 	   });
-		
+
+			{{!-- fetch('/images?type=slideshow')
+  		.then(response => response.json())
+  		.then(data => {
+			  for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+            document.getElementById('home-slideshow').innerHTML += `<div class="slide"><img src="${obj.url}" alt="img"/></div>`
+         }  
+	   }); --}}
 	</script>
 
 

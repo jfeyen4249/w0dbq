@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
-app.get('/rules', (req, res) => {
+app.get('/rr', (req, res) => {
   res.render('railroad')
 })
 
@@ -66,6 +66,21 @@ app.get('/calendar', (req, res) => {
   res.render('calendar')
 })
 
+app.get('/bod', (req, res) => {
+  res.render('bod')
+})
+
+app.get('/about', (req, res) => {
+  res.render('about')
+})
+
+
+// ****************************************
+// ****************************************
+// ****           API Calls            ****
+// ****************************************
+// ****************************************
+
 app.get('/getevent', (req, res) => {
   let id = req.query.id;
   try {
@@ -74,7 +89,6 @@ app.get('/getevent', (req, res) => {
       console.log(results)
       res.send(results);
     });
-
   }
   catch (exception_var) {
     console.log("Error");
@@ -88,7 +102,6 @@ app.get('/getcalendar', (req, res) => {
       console.log(results)
       res.send(results);
     });
-
   }
   catch (exception_var) {
     console.log("Error");
@@ -105,7 +118,6 @@ app.get('/lunch', (req, res) => {
     
       res.send(results);
     });
-
   }
   catch (exception_var) {
     console.log("Error");
@@ -115,14 +127,67 @@ app.get('/lunch', (req, res) => {
 app.get('/testing', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
-
   try {
     connection.query(`SELECT start from calendar WHERE start >= ${d} AND type ='Testing' order by start ASC LIMIT 1`, function (error, results, fields) {
       if (error) throw error;
     
       res.send(results);
     });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
 
+ app.get('/zoommeeting', (req, res) => {
+  let d = new Date().toISOString();
+  d =  d.substring(0,10)
+  try {
+    connection.query(`SELECT * from zoom WHERE date >= ${d} order by date ASC LIMIT 1`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/arescontrolers', (req, res) => {
+  let d = new Date().toISOString();
+  d =  d.substring(0,10)
+  try {
+    connection.query(`SELECT * from ares_netcontrol WHERE date >= ${d} order by date ASC LIMIT 4`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/arescontrol', (req, res) => {
+  let d = new Date().toISOString();
+  d =  d.substring(0,10)
+  try {
+    connection.query(`SELECT * from ares_netcontrol WHERE date >= ${d} order by date ASC LIMIT 1`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/images', (req, res) => {
+  let type = req.query.type;
+  try {
+    connection.query(`SELECT * from images WHERE active='Yes' AND type = '${type}' order by id DESC`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
   }
   catch (exception_var) {
     console.log("Error");
