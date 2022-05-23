@@ -111,9 +111,10 @@ app.get('/getcalendar', (req, res) => {
 app.get('/lunch', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
-
+  console.log(d)
+                          //                            <= STR_TO_DATE('2013-09-08', '%Y-%m-%d')
   try {
-    connection.query(`SELECT location from calendar WHERE start >= ${d} AND type ='Lunch Bunch' order by start ASC LIMIT 1`, function (error, results, fields) {
+    connection.query(`SELECT * from calendar WHERE start >= STR_TO_DATE('${d}', '%Y-%m-%d') AND type ='Lunch Bunch' order by start ASC`, function (error, results, fields) {
       if (error) throw error;
     
       res.send(results);
@@ -128,7 +129,7 @@ app.get('/testing', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
   try {
-    connection.query(`SELECT start from calendar WHERE start >= ${d} AND type ='Testing' order by start ASC LIMIT 1`, function (error, results, fields) {
+    connection.query(`SELECT start from calendar WHERE start >= STR_TO_DATE('${d}', '%Y-%m-%d') AND type ='Testing' order by start ASC LIMIT 1`, function (error, results, fields) {
       if (error) throw error;
     
       res.send(results);
@@ -143,7 +144,7 @@ app.get('/testing', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
   try {
-    connection.query(`SELECT * from zoom WHERE date >= ${d} order by date ASC LIMIT 1`, function (error, results, fields) {
+    connection.query(`SELECT * from zoom WHERE date >= STR_TO_DATE('${d}', '%Y-%m-%d') order by date ASC LIMIT 1`, function (error, results, fields) {
       if (error) throw error;
       res.send(results);
     });
@@ -157,7 +158,7 @@ app.get('/testing', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
   try {
-    connection.query(`SELECT * from ares_netcontrol WHERE date >= ${d} order by date ASC LIMIT 4`, function (error, results, fields) {
+    connection.query(`SELECT * from ares_netcontrol WHERE date >= STR_TO_DATE('${d}', '%Y-%m-%d') order by date ASC LIMIT 4`, function (error, results, fields) {
       if (error) throw error;
       res.send(results);
     });
@@ -171,7 +172,7 @@ app.get('/testing', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
   try {
-    connection.query(`SELECT * from ares_netcontrol WHERE date >= ${d} order by date ASC LIMIT 1`, function (error, results, fields) {
+    connection.query(`SELECT * from ares_netcontrol WHERE date STR_TO_DATE('${d}', '%Y-%m-%d') order by date ASC LIMIT 1`, function (error, results, fields) {
       if (error) throw error;
       res.send(results);
     });
