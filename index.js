@@ -74,6 +74,10 @@ app.get('/about', (req, res) => {
   res.render('about')
 })
 
+app.get('/iaspota', (req, res) => {
+  res.render('iaspota')
+})
+
 
 // ****************************************
 // ****************************************
@@ -86,7 +90,6 @@ app.get('/getevent', (req, res) => {
   try {
     connection.query(`SELECT description from calendar WHERE id=${id}`, function (error, results, fields) {
       if (error) throw error;
-      console.log(results)
       res.send(results);
     });
   }
@@ -99,7 +102,6 @@ app.get('/getcalendar', (req, res) => {
   try {
     connection.query(`SELECT * from calendar`, function (error, results, fields) {
       if (error) throw error;
-      console.log(results)
       res.send(results);
     });
   }
@@ -111,10 +113,9 @@ app.get('/getcalendar', (req, res) => {
 app.get('/lunch', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
-  console.log(d)
-                          //                            <= STR_TO_DATE('2013-09-08', '%Y-%m-%d')
+  
   try {
-    connection.query(`SELECT * from calendar WHERE start >= STR_TO_DATE('${d}', '%Y-%m-%d') AND type ='Lunch Bunch' order by start ASC`, function (error, results, fields) {
+    connection.query(`SELECT * from calendar WHERE start >= STR_TO_DATE('${d}', '%Y-%m-%d') AND type ='Lunch Bunch' order by start ASC LIMIT 1`, function (error, results, fields) {
       if (error) throw error;
     
       res.send(results);
@@ -154,6 +155,139 @@ app.get('/testing', (req, res) => {
   }
  })
 
+
+// ****************************************************************************************************************************************
+// ****                                                  IASPOTA API's                                                                 ****
+// ****************************************************************************************************************************************
+
+app.get('/aispotalogs', (req, res) => {
+  try {
+    connection.query(`SELECT * from iaspota_logs`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/aispotaparks', (req, res) => {
+  try {
+    connection.query(`SELECT * from iaspota_parks`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/aispotaoperators', (req, res) => {
+  try {
+    connection.query(`SELECT operator, count(DISTINCT(callsign)) FROM iaspota_logs group by operator order by count(DISTINCT(callsign)) desc limit 5;`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/aispotacount', (req, res) => {
+  try {
+    connection.query(`SELECT COUNT(*) FROM iaspota_logs count_demos`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/aispotsearch', (req, res) => {
+   let park = req.query.park;
+  try {
+    connection.query(`SELECT * FROM iaspota_logs WHERE park= '${park}'`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+
+// ****************************************************************************************************************************************
+// ****                                          Railroads on the Air API's                                                            ****
+// ****************************************************************************************************************************************
+
+app.get('/rrdepots', (req, res) => {
+ try {
+   connection.query(`SELECT * FROM rr_depots`, function (error, results, fields) {
+     if (error) throw error;
+     res.send(results);
+   });
+ }
+ catch (exception_var) {
+   console.log("Error");
+ }
+})
+
+app.get('/rrstats', (req, res) => {
+  try {
+    let cat = req.body.cat;
+    connection.query(`SELECT operator, count(*) as occurrences FROM rr_log GROUP BY operator ORDER BY occurrences DESC LIMIT 3;`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
+
+app.get('/rrlocations', (req, res) => {
+  try {
+    let cat = req.body.cat;
+    connection.query(`SELECT location, count(*) as occurrences FROM rr_log GROUP BY location ORDER BY occurrences DESC LIMIT 3;`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
+
+app.get('/rrchaser', (req, res) => {
+  try {
+    let cat = req.body.cat;
+    connection.query(`SELECT callsign, count(*) as occurrences FROM rr_log GROUP BY callsign ORDER BY occurrences DESC LIMIT 3;`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
+
+
+
+
+
+// ****************************************************************************************************************************************
+// ****                                                 ARES API's                                                                     ****
+// ****************************************************************************************************************************************
+
  app.get('/arescontrolers', (req, res) => {
   let d = new Date().toISOString();
   d =  d.substring(0,10)
@@ -181,6 +315,13 @@ app.get('/testing', (req, res) => {
     console.log("Error");
   }
  })
+
+
+
+// ****************************************************************************************************************************************
+// ****                                              Image Gallery API's                                                               ****
+// ****************************************************************************************************************************************
+
 
  app.get('/images', (req, res) => {
   let type = req.query.type;

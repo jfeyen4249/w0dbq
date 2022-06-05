@@ -74,7 +74,7 @@
 						<ul>
 							<li>Coffee Net 9:15am</li>
 							<li>ARES Net Tuesday at 7:30pm </li>
-							<li>Club Sunday Night Net at 8:30pm </li>
+							<li>Club Sunday Night Net at 8:00pm </li>
 							
 						</ul>
 						<p><br><br><a class="btn btn-action btn-lg" role="button" href="/about">Find out More</a></p>
@@ -98,7 +98,9 @@
 					<div class="h-caption"><h4><i class="fa-solid fa-utensils"></i>Lunch Bunch</h4></div>
 					<div class="h-body text-center">
 						<p>Lunch bunch is held every Thursday at 11:30. This week we will be at <br><span class="lunch" id="lunch"></span></p>
-						<br><br><a class="btn btn-action btn-lg btn-info" role="button">Learn More</a>
+						<p class="lunch address" id="lunch-address"></p>
+						<br>
+						<a class="btn btn-action btn-lg btn-info" role="button">Learn More</a>
 					</div>
 				</div>
 			</div> <!-- /row  -->
@@ -132,6 +134,7 @@
   		.then(response => response.json())
   		.then(data => {
 			  document.getElementById('lunch').innerText = data[0].location
+			  document.getElementById('lunch-address').innerText = data[0].Address
 	   });
 
 
@@ -148,9 +151,6 @@
 			let weekday = days[a];
 			console.log(weekday);
 			
-
-
-
 			var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 			var month = months[data.substring(16,18) - 1]
 			let day = data.substring(19,21)

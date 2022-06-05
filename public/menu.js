@@ -5,7 +5,7 @@ document.getElementById('nav-bar').innerHTML += `
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Events <b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li><a href="/calendar">Calendar</a></li>
-        <li><a href="#">IASPOTA</a></li>
+        <li><a href="/iaspota">IASPOTA</a></li>
         <li><a href="https://www.lctota.org/">Lewis and Clark Trail on the Air</a></li>
         <li><a href="rr">Iowa Railroads on the Air</a></li>
         <li><a href="#">Field Day 2022</a></li>

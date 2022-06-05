@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>W0DBQ</title>
+    
+    <script src="../public/main.js" defer></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../public/main.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    
+
+    <div class="main" id="main">
+        <div class="appmenu" id="appmenu"></div>
+        <div class="w3-margin-top w3-container w3-border w3-large">
+            <div class="w3-center"><H1>IOWA RAILROADS ON THE AIR</H1></div>
+        </div>
+          <div class="w3-bar w3-black">
+            <button class="w3-bar-item w3-button" onclick="openRRTab('Announcement')">Announcement</button>
+            <button class="w3-bar-item w3-button" onclick="openRRTab('QSL')">QSL</button>
+            <button class="w3-bar-item w3-button" onclick="openRRTab('Rules')">Rules</button>
+            <button class="w3-bar-item w3-button" onclick="openRRTab('Background')">Background</button>
+            <button class="w3-bar-item w3-button" onclick="openRRTab('Contacts')">Contacts</button>
+          </div>
+          <script>
+          function openRRTab(cityName) {
+            var i;
+            var x = document.getElementsByClassName("RRTab");
+            for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+            }
+            document.getElementById(cityName).style.display = "block";
+          }       
+        </script>   
+        <div class="home-railRoad-container">
+            <div class="item1"></div>
+            <div class="item2 boxes">
+                <div id="Announcement" class="RRTab">
+                    <h2>Announcement</h2>
+                    <iframe src="../Docs/Railroad/IRROTA Announce_01_Intro.txt" width="100%" height="100%"></iframe>
+                  </div>
+                  
+                  <div id="QSL" class="RRTab" style="display:none">
+                    <h2>Certification/QSL</h2>
+                    <iframe src="../Docs/Railroad/IRROTA Announce_02_CertQSL.txt" width="100%" height="100%"></iframe>
+                  </div>
+                  
+                  <div id="Rules" class="RRTab" style="display:none">
+                    <h2>Rules</h2>
+                    <iframe src="../Docs/Railroad/IRROTA Announce_03_Rules.txt" width="100%" height="100%"></iframe>
+                  </div>
+
+                  <div id="Background" class="RRTab" style="display:none">
+                    <h2>Background</h2>
+                    <iframe src="../Docs/Railroad/IRROTA Announce_04_Background.txt" width="100%" height="100%"></iframe>
+                  </div>
+
+                  <div id="Contacts" class="RRTab" style="display:none">
+                    <h2>Contacts</h2>
+                    <iframe src="../Docs/Railroad/IRROTA Announce_05_Contacts.txt" width="100%" height="100%"></iframe>
+                  </div>
+
+                </div>
+            <div class="item3 boxes">
+              <div class="w3-margin-top w3-center">
+                <button onClick="location.href='UploadImage2.html'" type="button">Upload Images</button>
+                </div>
+              <!-- <button class="btn btn-primary btn-lg" onClick="window.open('https://join.zoom.us')">Upload Depot Images</button> -->
+            </div> 
+
+            <div class="item4 boxes">
+              <div class="w3-margin-top w3-center">
+                <button onClick="location.href='UploadLog.html'" type="button">Upload Logs</button>
+                </div>
+              <!-- <button class="btn btn-primary btn-lg" onClick="window.open('https://join.zoom.us')">Upload Logs</button> -->
+            </div>
+
+
+            <div class="item5 boxes">
+            </div>
+            <div class="item6 boxes">
+            </div>
+        </div>
+        <h6 id="footer" class="footer"></h6>
+    </div>
+    
+</body>
+</html>

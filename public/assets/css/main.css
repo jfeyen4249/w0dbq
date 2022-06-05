@@ -273,8 +273,16 @@ img.pull-left { margin-right: 10px; }
 }
 
 
+.address {
+	margin: -5px;
+	font-size: 10px;
+}
 
+.depots-wrapper {
+	max-height: 700px;
 
+	overflow-y: scroll;
+}
 
 
 
