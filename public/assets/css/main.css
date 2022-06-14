@@ -284,6 +284,12 @@ img.pull-left { margin-right: 10px; }
 	overflow-y: scroll;
 }
 
+.stats {
+	font-size: 16px;
+	text-align: center;
+	margin-left: -35px;
+}
+
 
 
 

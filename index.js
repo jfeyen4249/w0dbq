@@ -284,6 +284,19 @@ app.get('/rrchaser', (req, res) => {
   }
 })
 
+app.get('/rrcount', (req, res) => {
+  try {
+    let cat = req.body.cat;
+    connection.query(`SELECT count(*) as total FROM rr_log ;`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+})
 
 
 

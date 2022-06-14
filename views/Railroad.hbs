@@ -68,19 +68,19 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 					<div class="rrgrid-container">
 						<div class="rrgrid-item">
 							<h4 class="rrtop-title">Top Arcivator</h4>
-							<ul>
+							<ul id="operators" class="stats">
 
 							</ul>
 						</div>
 						<div class="rrgrid-item">
 							<h4 class="rrtop-title">Top Depot</h4>
-							<ul>
+							<ul  id="locations" class="stats">
 
 							</ul>
 						</div>
 						<div class="rrgrid-item">
 							<h4 class="rrtop-title">Top Chaser</h4>
-							<ul>
+							<ul id="chaser" class="stats">
 
 							</ul>
 						</div> 
@@ -218,17 +218,36 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 		 }  
 	   });
 
+	   fetch('/rrstats') 
+  		.then(response => response.json())
+  		.then(data => {
+			  for(let i = 0; i < data.length; i++) {
+				let obj = data[i]
+				document.getElementById('operators').innerHTML += `<li>${obj.operator}: ${obj.occurrences}</li>`
+		 }  
+	   });
 
-		let data = []
+	   fetch('/rrlocations') 
+  		.then(response => response.json())
+  		.then(data => {
+			  for(let i = 0; i < data.length; i++) {
+				let obj = data[i]
+				document.getElementById('locations').innerHTML += `<li>${obj.location}: ${obj.occurrences}</li>`
+		 }  
+	   });
 
-		data.push({
-			"name": "Colin Wheatley",
-			"email": "},
-			{
-				"name": "Colin Wheatley",
-				"email": "
-			}
-			)
+	   fetch('/rrchaser') 
+  		.then(response => response.json())
+  		.then(data => {
+			  for(let i = 0; i < data.length; i++) {
+				let obj = data[i]
+				document.getElementById('chaser').innerHTML += `<li>${obj.callsign}: ${obj.occurrences}</li>`
+		 }  
+	   });
+
+	   fetch('/rrcount') 
+  		.then(response => response.json())
+  		.then(data => {document.getElementById('rrtotal').innerHTML = data[0].total});
 
 
 	</script>
