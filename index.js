@@ -78,6 +78,10 @@ app.get('/iaspota', (req, res) => {
   res.render('iaspota')
 })
 
+app.get('/test', (req, res) => {
+  res.render('upload')
+})
+
 
 // ****************************************
 // ****************************************
