@@ -6,12 +6,22 @@
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38509576-8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38509576-8');
+</script>
+	
 	<title>W0DBQ: Home</title>
 	
 
 	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
 	
-	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 	<script src="https://kit.fontawesome.com/2180f850ac.js" crossorigin="anonymous"></script>
@@ -47,7 +57,7 @@
 	<header id="head">
 		<div class="container">
 			<div class="row">
-				<h1 class="lead">Attened a Club Meeting Online</h1>
+				<h1 class="lead">Attend a Club Meeting Online</h1>
 				<p class="tagline">Club meeting are broadcast on Zoom. Use the button below to join the meeting</a></p>
 				<p><a class="btn btn-action btn-lg" role="button" href="/zoom">Zoom Meeting</a></p>
 			</div>
@@ -57,7 +67,10 @@
 
 	<!-- Intro -->
 	<div class="container text-center">
-		
+		<div class="slideshow-container">
+				<img class="slide-pic" id="slide-pic" src="">
+				<p class="slide-info" id="slide-info"></p>
+		</div>
 	</div>
 	<!-- /Intro-->
 		
@@ -130,6 +143,35 @@
 	</footer>	
 		
 	<script>
+		let slideImg = [];
+		let slideinfo = [];
+		let slidePic = document.getElementById('slide-pic')
+		let slideshowInfo  = document.getElementById('slide-info')
+		let slideImageCount = slideImg.length - 1
+		let i = 0
+
+			fetch('/slideshow') 
+			.then(response => response.json())
+			.then(data => {
+				
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					slideImg.push(obj.url)
+					slideinfo.push(obj.shortinfo)
+				}  
+	   		});
+
+		setInterval(function() {	
+				slidePic.src = slideImg[i]
+				slideshowInfo.innerHTML = slideinfo[i]
+				i++
+				if (i >= slideImg.length) {
+					i = 0;
+				}
+		}, 8000);
+
+
+
 		fetch('/lunch')
   		.then(response => response.json())
   		.then(data => {
@@ -149,7 +191,7 @@
 
 			let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 			let weekday = days[a];
-			console.log(weekday);
+		
 			
 			var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 			var month = months[data.substring(16,18) - 1]

@@ -6,7 +6,7 @@
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
-	<title>W0DBQ: Calendar</title>
+	<title>W0DBQ: Photo Gallery</title>
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
@@ -22,9 +22,14 @@
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css">
       <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js"></script>
+
+
 </head>
 
 <body class="home">
+	<div class="galley-box"></div>
+
+
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container" id="nav-bar">
@@ -47,51 +52,66 @@
 
 		<ol class="breadcrumb">
 			<li><a href="index.html">Home</a></li>
-			<li class="active">Calendar</li>
+			<li class="active">Photo Gallery</li>
 		</ol>
 
 		<div class="row">
+			<div class="grid-container-photo" id="photogrid">
+				
+				
+			</div>
 			
-	
-				 <div id='calendar'></div>	
 		
+				<div class="galley-box-bg" id="gallery-modal" onclick="document.getElementById('gallery-modal').style.display='none'">
+					<div class="grid-container-modal">
+						<div class="grid-item-modal"><img id="gallery-pic" class="gallery-pic">	</div>
+						<div class="grid-item-modal"><p id="gallery-info" class="gallery-info"></p></div>
+					</div>
+				</div>
+
+
 			<!-- /Sidebar -->
 
 		</div>
 	</div>	<!-- /container -->
 
+
+
 	    <script>
 
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-		  selectable: true,
-		  events: '/getcalendar',
-		  themeSystem: 'bootstrap',
-		  showNonCurrentDates: false,
-
-		  eventClick: function(info) {
-    		//alert('Event: ' + info.event.description);
-
 			
-			fetch('/getevent/?id=' + info.event.id)
-			.then(response => response.json())
-			.then(data => {
-				console.log(data);
-				let description = data[0].description;
-				if(description !== '') {
-					alert(data[0].description)
-				}
-				
-			
-		});
-			}		  
-        });
 
+     fetch('/gallery')
+  		.then(response => response.json())
+  		.then(data => {
 		
-        calendar.render();
-      });
+			  for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+				console.log(obj.url)
+				document.getElementById('photogrid').innerHTML += `
+					<div class="grid-item-photo" id="${obj.id}" onclick="loadimg(${obj.id});">
+						<img class="photo-thumb" src="${obj.url}">
+					</div>
+				`
+         }  
+	   });
+
+	   function loadimg(id) {
+		console.log(id)
+		fetch(`/gallerydetails?id=${id}`)
+  		.then(response => response.json())
+  		.then(data => {
+			console.log(data[0])
+			{{!-- document.getElementById('photogrid').innerHTML += `
+					<div class="grid-item-photo" id="${obj.id}" onclick="loadimg(${obj.id});">
+						<img class="photo-thumb" src="${obj.url}">
+					</div>
+				` --}}
+			document.getElementById('gallery-pic').src = data[0].url
+			document.getElementById('gallery-info').innerHTML = data[0].info
+			document.getElementById('gallery-modal').style.display='block'
+	   });
+	   }
 
     </script>
 		<div class="footer2">

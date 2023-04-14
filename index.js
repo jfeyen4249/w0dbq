@@ -3,11 +3,14 @@ const mysql = require('mysql')
 const app = express()
 const multer = require("multer");
 const upload = multer({ dest: "./public/img" });
-const fs = require('fs');
 const dotenv = require('dotenv');
 const path = require('path');
 var bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { re, im } = require('mathjs');
+var parser = require('fast-xml-parser');
+const { compareObjs } = require('fullcalendar');
+fetch = require('node-fetch')
 dotenv.config({ path: './.env'});
 const port = 80;
 
@@ -25,7 +28,7 @@ app.set('view engine', 'hbs');
 const publicDirectory = path.join(__dirname, './public');
 app.use(express.static(publicDirectory));
 app.use(express.urlencoded({extended: false}));
-app.use(express.json());
+app.use(express.json({limit: '7mb'}));
 
 function authenticateTocken(req, res, nex) {
   const authHeader = req.headers['authorization']
@@ -39,6 +42,15 @@ function authenticateTocken(req, res, nex) {
   })
 }
 
+
+function convertxml(xml) {
+  fetch(`https://api.factmaven.com/xml-to-json?xml=${xml}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    return data;
+  });
+}
 
 // ****************************************
 // ****************************************
@@ -80,6 +92,18 @@ app.get('/iaspota', (req, res) => {
 
 app.get('/test', (req, res) => {
   res.render('upload')
+})
+
+app.get('/logger', (req, res) => {
+  res.render('logger')
+})
+
+app.get('/fdlogger', (req, res) => {
+  res.render('fdlogger')
+})
+
+app.get('/photos', (req, res) => {
+  res.render('photos')
 })
 
 
@@ -230,9 +254,22 @@ app.get('/aispotalogs', (req, res) => {
 // ****                                          Railroads on the Air API's                                                            ****
 // ****************************************************************************************************************************************
 
+  function depotadd(adddepot){
+    try {
+      connection.query(`INSERT INTO rr_depots SET ? `, {depot: adddepot}, function (error, results, fields) {
+      // if (error) throw error;
+      return("Depot Added")
+    });
+    } catch (exception_var) {
+    console.log("Error");
+    }
+  }
+
+
+
 app.get('/rrdepots', (req, res) => {
  try {
-   connection.query(`SELECT * FROM rr_depots`, function (error, results, fields) {
+   connection.query(`SELECT * FROM rr_depots ORDER BY depot ASC`, function (error, results, fields) {
      if (error) throw error;
      res.send(results);
    });
@@ -241,6 +278,30 @@ app.get('/rrdepots', (req, res) => {
    console.log("Error");
  }
 })
+
+app.get('/depots', (req, res) => {
+  let depot = req.query.depot
+  try {
+    connection.query(`SELECT * FROM rr_depots WHERE depot = '${depot}'`, function (error, results, fields) {
+      if (error) throw error;
+        if(results[0] === undefined) {
+          try{
+            depotadd(req.query.depot)
+            res.send('Log was added')
+          } catch{
+            res.send("Error adding Depot")
+          }
+        
+        } else {
+          res.send('')
+        }
+    });
+
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
 
 app.get('/rrstats', (req, res) => {
   try {
@@ -298,7 +359,70 @@ app.get('/rrcount', (req, res) => {
   }
 })
 
+app.post('/rrlog', (req, res) => {
+  let data = req.body;
+  let DateNow = new Date().toISOString().substring(0, 10);
+  console.log(DateNow)
 
+
+
+  for (let i = 0; i < data.length; i++) {
+    
+    let logcontact = data[i].contact;
+    let logdate = data[i].date;
+    let logoperator = data[i].operator;
+    let logdepot = data[i].depot;
+    
+    let sqldata = {
+      callsign: logcontact,
+      date: logdate,
+      operator: logoperator,
+      location: logdepot
+    }
+    try {
+        connection.query(`INSERT INTO rr_log SET ?`, sqldata, function (error, results, fields) {
+          if (error) throw error;
+        });
+      }
+      catch (exception_var) {
+        res.send('Error')
+        return
+      }
+  }
+    res.send("Logs submitted successfully!");
+  // 
+ })
+
+ app.get('/rrcalendar', (req, res) => {
+    try {
+      connection.query(`SELECT * FROM rr_cal`, function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      });
+    }
+    catch (exception_var) {
+      console.log("Error");
+    }
+ })
+
+ app.post('/rrcal', (req, res) => {
+  try {  
+   let sqldata = {
+      callsign: req.body.callsign,
+      date: req.body.date,
+      time: req.body.time,
+      location: req.body.location,
+      band: req.body.band
+    }
+    connection.query(`INSERT INTO rr_cal SET ?`, sqldata, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
 
 
 // ****************************************************************************************************************************************
@@ -332,7 +456,72 @@ app.get('/rrcount', (req, res) => {
     console.log("Error");
   }
  })
+// ****************************************************************************************************************************************
+// ****                                                Field Day API's                                                                 ****
+// ****************************************************************************************************************************************
 
+
+
+        
+app.get('/qrzLookUp', (req, res) => {
+  let callsign = req.query.callsign
+  let band= req.query.band
+  let mode = req.query.mode
+
+   fetch("https://xmldata.qrz.com/xml/current/?username=kd9hae;password=ArmY1234$$")
+    
+    .then(response => response.text())
+		.then(keydata => {
+
+
+
+          fetch(`https://api.factmaven.com/xml-to-json?xml=${keydata}`)
+          .then(response => response.json())
+          .then(data => {
+           // lookup(data.QRZDatabase.Session.Key)
+
+           
+            fetch(`https://xmldata.qrz.com/xml/current/?s=${data.QRZDatabase.Session.Key};callsign=${callsign}`)
+            .then(response => response.text())
+            .then(dbdata => {
+              fetch(`https://api.factmaven.com/xml-to-json?xml=${dbdata}`)
+              .then(response => response.json())
+              .then(logdata => {
+                let type = 'New'
+                try {
+                  connection.query(`SELECT * FROM logs WHERE callsign='${callsign}' AND band='${band}' AND mode='${mode}' AND year='2021'`, function (error, results, fields) {
+                    if (error) throw error;
+                    if(!results.length) {
+                      type = 'New'
+                    } else {
+                      type = 'Duplicate'
+                    }
+                  });
+                }
+                catch (exception_var) {
+                  console.log("Error");
+                }
+
+
+
+
+                //console.log(logdata)
+                let calldata = {
+                  lat: logdata.QRZDatabase.Callsign.lat,
+                  lng: logdata.QRZDatabase.Callsign.lon,
+                  class: logdata.QRZDatabase.Callsign.state,
+                  name: logdata.QRZDatabase.Callsign.name_fmt,
+                  image : logdata.QRZDatabase.Callsign.image,
+                  type: type,
+                }
+                
+                res.send(JSON.stringify(calldata))
+              });
+            });
+          });
+	  	});
+    });
+     
 
 
 // ****************************************************************************************************************************************
@@ -344,6 +533,57 @@ app.get('/rrcount', (req, res) => {
   let type = req.query.type;
   try {
     connection.query(`SELECT * from images WHERE active='Yes' AND type = '${type}' order by id DESC`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/gallery', (req, res) => {
+  let type = req.query.type;
+  try {
+    connection.query(`SELECT * from images WHERE active='Yes' order by id DESC`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/gallerydetails', (req, res) => {
+  let id = req.query.id;
+  try {
+    connection.query(`SELECT * from images WHERE id = '${id}'`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.post('/images', (req, res) => {
+  let image = req.body;
+  try {
+    connection.query(`INSERT INTO images SET ?`, image, function (error, results, fields) {
+      if (error) throw error;
+      res.send('Success');
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/slideshow', (req, res) => {
+  try {
+    connection.query(`SELECT * from images WHERE active='Yes' AND frontpage = 'Yes' order by id DESC`, function (error, results, fields) {
       if (error) throw error;
       res.send(results);
     });

@@ -21,6 +21,9 @@
 	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
 	<link rel="stylesheet" href="assets/css/main.css">
 
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css">
+      <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js"></script>
+
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
 	<script src="assets/js/html5shiv.js"></script>
@@ -65,9 +68,14 @@
 Website: The Great River Amateur Radio Club will have a website where you can upload the name of the depot(s) you worked from and the contacts you made. It will also contain the rules pertaining to the IRROTA event.</p>
 				<p>Iowa has approximately 375 former railroad depots. Most have been abandoned, others are active railroad depots, some, such as the one in Dubuque have become museums, some have become business buildings, and some have been drug to other sites to serve other purposes. You can operate from any of these train depots. However, if you work from one that has become a business you will of course need to have permission; and if you work from one that is an active train station you probably also need permission. Of course, you'll want to stay out of the way so there are no accidents or problems.</p>
 				<br><p>
+					{{!-- <div>
+						<div id='calendar'></div>
+					</div> --}}
+					
+
 					<div class="rrgrid-container">
 						<div class="rrgrid-item">
-							<h4 class="rrtop-title">Top Arcivator</h4>
+							<h4 class="rrtop-title">Top Activator</h4>
 							<ul id="operators" class="stats">
 
 							</ul>
@@ -125,11 +133,22 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 						
 						<div class="rr-btn">
 							<h4>Submit Your Logs and Photos</h4>
-							<a class="btn btn-submit btn-sm btn-info space" role="button">Submit Logs</a><br><br>
-						<a class="btn btn-action btn-sm btn-info" role="button">Submit Photos</a>
+							<a class="btn btn-submit btn-sm btn-info space" role="button" onclick="logbox()">Submit Logs</a><br><br>
+							<a class="btn btn-action btn-sm btn-info" role="button" onclick="document.getElementById('photo-box').style.display='block'">Submit Photos</a><br><br>
+							<a class="btn btn-action btn-sm btn-warning" role="button" onclick="loadRRcal()">Calendar</a>
 						</div>
 					</div>
 				</div>
+
+				<div class="row widget">
+					<div class="col-xs-12">
+						
+						
+					</div>
+				</div>
+
+
+				
 				<div class="row widget">
 					<div class="col-xs-12">
 						<h4>Questions </h4>
@@ -141,6 +160,7 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 						<h4>Photo Gallery</h4>
 						<p><img src="" alt="" id="rrphotos"></p>
 						<p id="photo-info"></p>
+						
 					</div>
 				</div>
 				<div class="row widget">
@@ -171,7 +191,7 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 					<div class="col-md-6 widget">
 						<div class="widget-body">
 							<p class="text-right">
-								Copyright &copy; 2014, Your name. 
+								Copyright &copy; 2022, W0DBQ. 
 							</p>
 						</div>
 					</div>
@@ -180,11 +200,150 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 		</div>
 	</footer>	
 
+        <div class="modal" id="modal">
+    		<div class="box-log" id="box">    
+ 			 <div class="box-content" id="box-content">
+    
+
+
+				<h3 style="text-align: center;">Post your Logs</h3>
+
+				<div class="log-boxes">
+					<div class="log-grid-container">
+						<div class="log-grid-item">Operator</div>
+						<div class="log-grid-item">Depot</div>
+						
+						<div class="log-grid-item">Date Actvited</div>  
+						<div class="log-grid-item">Contact</div>
+						
+						<div class="log-grid-item">
+							<div class="fileUpload btn btn-success" onclick="checklog();">
+								<span>Upload Log</span>
+							</div>
+						
+						</div>
+						<div class="log-grid-item"><a class="btn btn-submit btn-sm btn-danger space" role="button" onclick=" submitLog()">Submit Log</a></div>  
+						
+						<div class="log-grid-item"><input type="text" id="operator" style="text-transform: uppercase;  text-align:center;"></div>
+						<div class="log-grid-item">
+						<input type="text" list="depot" id="logdepot">
+						<datalist id="depot" name="depot">
+							<option value="">Select Depot</option>
+						</datalist></div>
+						
+						<div class="log-grid-item"><input type="date" id="logdate" ></div> 
+						<div class="log-grid-item"><input type="text" id="contact"  style="text-transform: uppercase; text-align:center;">
+						</div>   
+						
+						<div class="log-grid-item"><a class="btn btn-submit btn-sm btn-primary space" role="button" onclick="addContact();">Add Contact</a>
+							</div>    
+						<div class="log-grid-item"><input type="file" class="upload hide" id="upload" accept=".adi" onchange="loadFile(this.files[0])"></div>  
+					</div>
+
+							
+				</div>
+					<div class="log-table">
+						<table class="table">
+								<thead>
+									<tr class="bg-success">
+										<th>ID</th>
+										<th>Contact</th>
+										<th>Depot</th>
+										<th>Date</th>
+										<th>Operator</th>
+									</tr>
+								</thead>
+								<tbody id="log-table">
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+    		<div class="cal-box" id="cal-box">    
+				
+					 <div class="cal-list">
+						<div id='calendar' class="rr-cal"></div>
+					 </div>
+						<div class="rrcal-grid-container">
+							<div class="item1">Railroad Calendar</div>
+							<div class="item2">
+								
+								<table class="table">
+								<thead>
+									<tr class="bg-success">
+										<th>Location</th>
+										<th>Date</th>
+										<th>Time</th>
+										<th>Band</th>
+										<th>Operator</th>
+									</tr>
+								</thead>
+								<tbody id="rrcal-table">
+
+								</tbody>
+							</table>
+
+							</div>
+							<div class="rr-wrapper">
+								<div class="item3">Depot <select id="cal-depot"></select></div>  
+								<div class="item4">Date: <input type="date" id="rrdate"></div>
+								<div class="item5">Time: <input type="time" name="" id="rrtime"></div>
+								<div class="item6">Band: <input type="text" id="band"></div>
+								<div class="item7 center"><input type="text" id="callsign" placeholder="Your Callsign"> <br><br> <button id="addcal" class="btn btn-info" onclick="postcal();">Add to Calendar</button> <br> <button class="btn btn-warning" onclick="document.getElementById('cal-box').style.display='none'">Close</button> </div>
+							</div>
+						</div>
+					 </div>
+			</div>
+	
+
+		<div class="photo-modal" id="photo-modal">
+    		<div class="photo-box" id="photo-box">    
+ 			 <div class="photo-box-content" id="photo-box-content">
+				<h3 style="text-align: center;">Post your Photos</h3>
+					
+				<a class="btn btn-submit btn-sm btn-success space center" role="button" onclick="document.getElementById('uploader').click()" >Add A Photo</a>
+				<input type="file" class="upload hide" id="uploader" accept=".jpg, .jpeg" onchange="resize()">
+				<br><br><img id="image" class="rr-im"><br><br>
+				<textarea id="info" placeholder="Caption" rows="4" cols="50"></textarea><br>
+				<a class="btn btn-submit btn-sm btn-success space center" role="button" onclick="postImage();">Post Photo</a>
+				<a class="btn btn-submit btn-sm btn-success space center" role="button" onclick="window.location.href = '/rr'" >Cancel</a>
+				
+				</div>
+			</div>
+		</div>
+
+
 	<script>
 		let photos = []
 		let photo_info = []
 		let i = 0;
+		let userlog = []
+		let userlog_id = 1;
+		let editstatus = false;
+		let editcallsign = "";
+		let image = "";
 
+
+
+		const modal = document.getElementById('modal');
+      modal.addEventListener('click', (e) => {
+        if (e.target.id == 'modal') {
+          modal.style.display = 'none';
+        }
+      });
+
+	  window.addEventListener('keydown', function(e) {
+	    if (e.keyCode == 13 && modal.style.display == 'block') {
+	      addContact();
+	    }
+	  });
+
+	
 		fetch('/images?type=Railroad')
   		.then(response => response.json())
   		.then(data => {
@@ -203,6 +362,7 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 				i = 0;
 			}
 		}, 5000);
+
 
 
 		fetch('/rrdepots') 
@@ -249,7 +409,312 @@ Website: The Great River Amateur Radio Club will have a website where you can up
   		.then(response => response.json())
   		.then(data => {document.getElementById('rrtotal').innerHTML = data[0].total});
 
+	function logbox() {
+			fetch('/rrdepots') 
+			.then(response => response.json())
+			.then(data => {
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('depot').innerHTML += `<option value="${obj.depot}">${obj.depot}</option>`
+				}  
+	   		});
+			document.getElementById('modal').style.display='block'
 
+		}
+
+	function addContact() {	
+			let contact = document.getElementById('contact').value.toUpperCase();
+			let operator = document.getElementById('operator').value.toUpperCase();
+			let depot = document.getElementById('logdepot').value;
+			let date = document.getElementById('logdate').value;
+
+			if(contact == '') {
+				alert('Please enter a contact');
+				return;
+			}
+
+			if(operator == '') {
+				alert('Please enter an operator');
+				return;
+			}
+
+			if(depot == '') {
+				alert('Please enter a depot');
+				return;
+			}
+
+			if(date == '') {
+				alert('Please enter a date');
+				return;
+			}
+
+
+			let data = {
+				id: userlog_id,
+				contact: contact,
+				operator: operator,
+				depot: depot,
+				date: date
+			}
+				
+			userlog.push(data)
+			console.log(userlog);
+
+			document.getElementById('log-table').innerHTML += `
+					<tr">
+						<td>${userlog_id}</td>
+						<td>${contact}</td>
+						<td>${depot}</td>
+						<td>${date}</td>
+						<td>${operator}</td>
+					</tr>
+				`;
+			userlog_id++
+			document.getElementById('contact').value = ''
+			document.getElementById('contact').focus()
+		}
+		
+	async function loadFile(file) {
+
+    		let text = await file.text();
+    		var lines = text.split('\n');
+			let current_contact = '';
+			for(var line = 0; line < lines.length; line++){
+				
+				var test_str = lines[line];
+				var callsign = test_str.startsWith("<Call:");
+				var endcontact = test_str.startsWith("<eor>");
+
+				
+
+				if(callsign === true) {
+					callsign = test_str.substring(8,line.length);
+					current_contact = callsign;
+					console.log(callsign);
+				}
+
+				if(endcontact === true) {
+					let operator = document.getElementById('operator').value.toUpperCase();
+					let depot = document.getElementById('depot').value;
+					let date = document.getElementById('logdate').value;
+					let filedata = {
+						id: userlog_id,
+						contact: current_contact,
+						operator: operator,
+						depot: depot,
+						date: date
+					}
+						
+					userlog.push(filedata)
+					console.log(userlog);
+
+					document.getElementById('log-table').innerHTML += `
+							<tr">
+								<td>${userlog_id}</td>
+								<td>${current_contact}</td>
+								<td>${depot}</td>
+								<td>${date}</td>
+								<td>${operator}</td>
+							</tr>
+						`;
+					userlog_id++
+				}
+			}
+		
+
+  		}
+
+	function checklog() {
+			
+			let operator = document.getElementById('operator').value.toUpperCase();
+			let depot = document.getElementById('logdepot').value;
+			let date = document.getElementById('logdate').value;
+
+			if(operator == '') {
+				alert('Please enter an operator');
+				return;
+			}
+
+			if(depot == '') {
+				alert('Please enter a depot');
+				return;
+			}
+
+			if(date == '') {
+				alert('Please enter a date');
+				return;
+			}
+			document.getElementById('upload').click();
+		}
+
+	function submitLog() {
+		let data =JSON.stringify(userlog);
+		
+		if(userlog.length == 0) {
+			
+			return;
+		}
+
+		fetch("/rrlog", {
+			method: "POST",
+			body: data,
+			headers: {'Content-Type': 'application/json'}
+			})
+			.then(response => response.text())
+			.then(text => {
+			alert(text);
+			})
+
+
+			let depot = document.getElementById('logdepot').value;
+			fetch(`/depots?depot=${depot}`)
+			.then(response => response.text())
+			.then(text => {
+			})
+		}
+
+		
+		
+
+
+	
+	function resize(){
+  //define the width to resize e.g 600px
+  var resize_width = 400;//without px
+
+  //get the image selected
+  var item = document.querySelector('#uploader').files[0];
+
+  //create a FileReader
+  var reader = new FileReader();
+
+  //image turned to base64-encoded Data URI.
+  reader.readAsDataURL(item);
+  reader.name = item.name;//get the image's name
+  reader.size = item.size; //get the image's size
+  reader.onload = function(event) {
+    var img = new Image();//create a image
+    img.src = event.target.result;//result is base64-encoded Data URI
+    img.name = event.target.name;//set name (optional)
+    img.size = event.target.size;//set size (optional)
+    img.onload = function(el) {
+      var elem = document.createElement('canvas');//create a canvas
+
+      //scale the image to 600 (width) and keep aspect ratio
+      var scaleFactor = resize_width / el.target.width;
+      elem.width = resize_width;
+      elem.height = el.target.height * scaleFactor;
+
+      //draw in canvas
+      var ctx = elem.getContext('2d');
+      ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
+
+      //get the base64-encoded Data URI from the resize image
+      var srcEncoded = ctx.canvas.toDataURL('image/png', 1);
+
+      //assign it to thumb src
+	  image = srcEncoded;
+	  console.log(image);
+      document.querySelector('#image').src = srcEncoded;
+
+      /*Now you can send "srcEncoded" to the server and
+      convert it to a png o jpg. Also can send
+      "el.target.name" that is the file's name.*/
+
+    }
+  }
+}
+
+	function postImage()
+	{
+		const data = {
+			url: image,
+			info: document.getElementById('info').value,
+			type: 'Railroad',
+			active: 'Yes'
+		}
+		fetch("/images", {
+          method: "POST",
+          body: JSON.stringify(data),
+		  headers: {
+			'Content-Type': 'application/json'
+		  }
+        })
+        .then(response => response.text())
+        .then(text => {
+          if(text == "Success"){
+			alert("Image added");
+			window.location.href = "/rr";
+		  }
+		  else{
+			alert("Error");
+		  }
+        })
+
+	}
+
+	function loadCal() {
+		document.getElementById('rrcal-table').innerHTML = ``
+		fetch('/rrcalendar') 
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('rrcal-table').innerHTML += `
+					<tr">
+						<td>${obj.location}</td>
+						<td>${obj.date}</td>
+						<td>${obj.time}</td>
+						<td>${obj.band}</td>
+						<td>${obj.callsign}</td>
+					</tr>
+				`;
+				}  
+	   		});	
+	}
+	
+	function loadRRcal() {
+		document.getElementById('cal-box').style.display='block'
+		fetch('/rrdepots') 
+			.then(response => response.json())
+			.then(data => {
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('cal-depot').innerHTML += `<option value="${obj.depot}">${obj.depot}</option>`
+				}  
+	   		});
+
+		loadCal()
+	}
+
+	function postcal() {
+			let callsign = document.getElementById('callsign').value
+			let date = document.getElementById('rrdate').value
+			let time = document.getElementById('rrtime').value
+			let band = document.getElementById('band').value
+			let location = document.getElementById('cal-depot').value
+
+
+			let data = {
+				callsign: callsign,
+				date: date,
+				time: time,
+				location: location,
+				band: band
+			}
+			fetch("/rrcal", {
+			method: "POST",
+			body: JSON.stringify(data),
+			headers: {'Content-Type': 'application/json'}
+			})
+			.then(response => response.text())
+			.then(text => {
+
+				loadCal()
+			})
+	}
+	
 	</script>
 	
 	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
