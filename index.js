@@ -8,9 +8,9 @@ const path = require('path');
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { re, im } = require('mathjs');
-var parser = require('fast-xml-parser');
+//var parser = require('fast-xml-parser');
 const { compareObjs } = require('fullcalendar');
-fetch = require('node-fetch')
+//fetch = require('node-fetch')
 dotenv.config({ path: './.env'});
 const port = 80;
 
@@ -70,8 +70,8 @@ app.get('/ares', (req, res) => {
   res.render('ares')
 })
 
-app.get('/zoom', (req, res) => {
-  res.render('zoom')
+app.get('/videos', (req, res) => {
+  res.render('videos')
 })
 
 app.get('/calendar', (req, res) => {

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+	
+	<title>W0DBQ: Calendar</title>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
+	
+	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<script src="/menu.js" defer></script>
+	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="/assets/css/main.css">
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css">
+      <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js"></script>
+</head>
+
+<body class="home">
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
+		<div class="container" id="nav-bar">
+			<div class="navbar-header">
+				<!-- Button for smallest screens -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+				<a class="navbar-brand" href="/"><img src="/assets/images/logo.png" alt="Progressus HTML5 template"></a>
+			</div>
+			<div class="navbar-collapse collapse">
+				
+			</div><!--/.nav-collapse -->
+		</div>
+	</div> 
+	<!-- /.navbar -->
+
+	<header id="head" class="secondary"></header>
+
+	<!-- container -->
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="index.html">Home</a></li>
+			<li class="active">Videos</li>
+		</ol>
+
+		<div class="row">
+			<center><h3>Club Live Stream</h3></center>
+			<iframe width="100%" height="500" src="https://www.youtube.com/embed/live_stream?channel=UCCfwiaCw80-c1xNv2Hlu38Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<br><hr><br>
+			<center><h2>Club Meeting Archives</h2></center>
+			<div class="ytgrid" id="ytgrid"></div>
+		
+			<!-- /Sidebar -->
+
+		</div>
+	</div>	<!-- /container -->
+
+	    <script>
+
+      var apiKey = 'AIzaSyD2OJVXHkBg_2G9rA2-c6om27wGp4KPokU';
+
+// Replace PLAYLIST_ID with the ID of the playlist you want to retrieve
+var playlistId = 'PLQWlmCpIIbNz4OaG1ji9I7L7SP-uXmNmZ';
+
+// Load the YouTube Data API client library
+gapi.load('client', function() {
+  // Set the API key and execute the request
+  gapi.client.setApiKey(apiKey);
+  gapi.client.load('youtube', 'v3', function() {
+    // Request the playlist items
+    var request = gapi.client.youtube.playlistItems.list({
+      part: 'snippet',
+      playlistId: playlistId,
+      maxResults: 50
+    });
+
+    // Execute the request and process the response
+    request.execute(function(response) {
+      var videos = [];
+
+      // Add each video to the videos array
+      response.items.forEach(function(item) {
+        var videoId = item.snippet.resourceId.videoId;
+        var videoTitle = item.snippet.title;
+        var videoThumbnail = item.snippet.thumbnails.standard.url;
+        var videoUrl = 'https://www.youtube.com/watch?v=' + videoId;
+        videos.push({
+          title: videoTitle,
+          thumbnail: videoThumbnail,
+          url: videoUrl,
+          published: item.snippet.publishedAt
+        });
+      });
+
+      // Sort the videos by published date (newest to oldest)
+      videos.sort(function(a, b) {
+        return new Date(b.published) - new Date(a.published);
+      });
+
+      // Print the videos
+      videos.forEach(function(video) {
+        // console.log(video.title);
+        // console.log(video.thumbnail);
+        // console.log(video.url);
+        // console.log(video);
+
+
+        document.getElementById('ytgrid').innerHTML += `
+        <div class="ytbox">
+          <img src="${video.thumbnail}" id="ytimg" class="ytimg">
+          <p class="yt-text" id="yttext"><a href="${video.url}">${video.title}</a></p>
+       </div>        `
+
+      });
+    });
+  });
+});
+
+    </script>
+		<div class="footer2">
+			<div class="container">
+				<div class="row">
+					
+					
+
+					<div class="col-md-6 widget">
+						<div class="widget-body">
+							<p class="text-right">
+								Copyright &copy; 2022, .
+							</p>
+						</div>
+					</div>
+
+				</div> <!-- /row of widgets -->
+			</div>
+		</div>
+	</footer>	
+		
+
+
+
+
+	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/assets/js/headroom.min.js"></script>
+	<script src="/assets/js/jQuery.headroom.min.js"></script>
+	<script src="/assets/js/template.js"></script>
+</body>
+</html>

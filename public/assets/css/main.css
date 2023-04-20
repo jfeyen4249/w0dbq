@@ -291,6 +291,36 @@ img.pull-left { margin-right: 10px; }
 }
 
 
+.ytbox {
+
+	background-color: #222;
+	width: 400px;
+	height: 350px;
+	text-align: center;
+	color: white;
+	border-radius: 10px;
+	margin: 10px;
+  }
+
+  .ytimg {
+	height: 275px;
+	width: auto;
+	margin: 10px;
+	margin-top: 20px;
+  }
+
+  .yt-text {
+	font-size: 18px;
+	margin-top: -5px;
+  }
+
+  .ytgrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	width: 60vw;
+	margin-left: -300px;
+  }
+
 
 
 
