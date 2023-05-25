@@ -579,20 +579,20 @@ Website: The Great River Amateur Radio Club will have a website where you can up
 
 	
 	function resize(){
-  //define the width to resize e.g 600px
-  var resize_width = 400;//without px
+	//define the width to resize e.g 600px
+	var resize_width = 400;//without px
 
-  //get the image selected
-  var item = document.querySelector('#uploader').files[0];
+	//get the image selected
+	var item = document.querySelector('#uploader').files[0];
 
-  //create a FileReader
-  var reader = new FileReader();
+	//create a FileReader
+	var reader = new FileReader();
 
-  //image turned to base64-encoded Data URI.
-  reader.readAsDataURL(item);
-  reader.name = item.name;//get the image's name
-  reader.size = item.size; //get the image's size
-  reader.onload = function(event) {
+	//image turned to base64-encoded Data URI.
+	reader.readAsDataURL(item);
+	reader.name = item.name;//get the image's name
+	reader.size = item.size; //get the image's size
+	reader.onload = function(event) {
     var img = new Image();//create a image
     img.src = event.target.result;//result is base64-encoded Data URI
     img.name = event.target.name;//set name (optional)

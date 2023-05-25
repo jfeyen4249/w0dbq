@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+	
+	<title>W0DBQ: Calendar</title>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
+	
+	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<script src="/auth.js"></script>
+	<script>
+		admin()
+	</script>
+	<script src="/menu.js" defer></script>
+	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+
+<body class="home">
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
+		<div class="container" id="nav-bar">
+			<div class="navbar-header">
+				<!-- Button for smallest screens -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+				<a class="navbar-brand" href="/"><img src="/assets/images/logo.png" alt="Progressus HTML5 template"></a>
+			</div>
+			<div class="navbar-collapse collapse">
+				
+			</div><!--/.nav-collapse -->
+		</div>
+	</div> 
+	<!-- /.navbar -->
+
+	<header id="head" class="secondary"></header>
+
+	<!-- container -->
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="index.html">Home</a></li>
+			<li class="active">Member Homepage</li>
+		</ol>
+
+		<div class="row">
+			
+			<div class="tab">
+  <button class="tablinks active" onclick="openCity(event, 'calendaradmin')">Calendar Admin</button>
+  <button class="tablinks" onclick="openCity(event, 'lunch')">Lunch Bunch Admin</button>
+  <button class="tablinks" onclick="openCity(event, 'bod')">BOD Admin</button>
+  <button class="tablinks" onclick="openCity(event, 'users')">User Managment</button>
+  <button class="tablinks" onclick="openCity(event, 'ares')">ARES Page</button>
+  <button class="tablinks" onclick="openCity(event, 'testing')">Testing</button>
+</div>
+
+<div id="calendaradmin" class="tabcontent" style="display: block;">
+  <h3>Calendar Managment</h3>
+  <p></p>
+</div>
+
+<div id="lunch" class="tabcontent">
+  <center><h3>Lunch Bunch Admin</h3></center>
+  <div class="lb-main">
+	<div class="lb-left" id="lbleft"> 
+		<h4>Lunch Bunch Schedule</h4>
+		
+
+
+
+
+	</div>
+	<div class="lb-right">
+		<h4>Lunch Bunch Locations</h4>
+		
+		<hr>
+		<h5>Current Locations</h5>
+		<select class="lb-loc-select" id="lbLocationList">
+			<option>Select a Location</option>
+		</select><br><br>
+		<input type="text" id="lbloctext" class="lb-loc-text" placeholder="Location Name"><br>
+		<input type="text" id="lbaddresstext" class="lb-loc-text" placeholder="Address"><br><br>
+		<button class="btn btn-success btn-lg" id="lbadd" onclick="addloc()"><i class="fa fa-map-marker" aria-hidden="true"></i> Add location</button><br>
+		<button class="btn btn-warning btn-lg" id="lbsave" onclick="updateloc()"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save Changes</button>
+		
+	</div>
+  </div>
+</div>
+
+<div id="bod" class="tabcontent">
+  <center>
+	<article class="col-md-15 maincontent">
+				<header class="page-header">
+					<h2 class="page-title">GRARC Board of Directors</h2>
+				</header>
+				<p>
+					<div class="card"  onclick="loadImages(1)">
+				<img id="bodimg1" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname1"></b><br><b id="callsign1"></b></h4> 
+					<p id="bodtitle1"></p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(2)">
+				<img id="bodimg2" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname2"></b><br><b id="callsign2"></b></h4> 
+					<p id="bodtitle2"></p> 
+				</div>
+			</div>
+
+
+			<div class="card" onclick="loadImages(3)">
+				<img id="bodimg3" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname3">Dan Tindell</b><br><b id="callsign3"></b></h4> 
+					<p id="bodtitle3">Secretary</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(4)">
+				<img id="bodimg4" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname4">Robert Smith</b><br><b id="callsign4"></b></h4> 
+					<p id="bodtitle4">Treasurer</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(5)">
+				<img id="bodimg5" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname5">Fred Miller</b><br><b id="callsign5"></b></h4> 
+					<p id="bodtitle5">Trustee</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(6)">
+				<img id="bodimg6" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname6">Kelly Allen</b><br><b id="callsign6"></b></h4> 
+					<p id="bodtitle6">Repeater Chairman</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(7)">
+				<img id="bodimg7" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname7">Ralph Gable</b><br><b id="callsign7"></b></h4> 
+					<p id="bodtitle7">At Large</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(8)">
+				<img id="bodimg8" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname8">Mark Manternach</b><br><b id="callsign8"></b></h4> 
+					<p id="bodtitle8">At Large</p> 
+				</div>
+			</div>
+
+			<div class="card" onclick="loadImages(9)">
+				<img id="bodimg9" src="" alt="Avatar" style="width:100%">
+				<div class="bod-container">
+					<h4><b id="bodname9">Joe Feyen</b><br><b id="callsign9"></b></h4> 
+					<p id="bodtitle9">Past President</p> 
+				</div>
+			</div>
+				</p>
+				
+				
+
+				<h3>&nbsp; </h3>
+				<p>&nbsp; </p>
+				<p>&nbsp; </p>
+				<p>&nbsp; </p>
+			</article>
+			<!-- /Article -->
+  </center>
+</div>
+
+<div id="users" class="tabcontent">
+  <div class="container mt-4">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Callsign</th>
+            <th>Name</th>
+			<th>Account Status</th>
+            <th>Administrator</th>
+            <th>BOD Admin</th>
+            <th>Testing  Admin</th>
+            <th>Photos Admin</th>
+            <th>Ares Admin</th>
+            <th>Repeater Admin</th>
+            <th>Calendar  Admin</th>
+            <th>User Admin</th>
+            <th>Lunch Bunch</th>
+          </tr>
+        </thead>
+        <tbody id="user-table">
+        
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<div id="ares" class="tabcontent">
+  <h3>Ares</h3>
+  <div id="editor">
+  <p>Hello World!</p>
+  <p>Some initial <strong>bold</strong> text</p>
+  <p><br></p>
+</div>
+</div>
+
+<div id="testing" class="tabcontent">
+  <h3>Testing</h3>
+  <p></p>
+</div>
+
+
+<dialog data-modal>
+	<div id="admindialog" class="admindialog">Test</div>
+	<center><button class="btn btn-action btn-lg" onclick="bodDialogclose();">Close</button></center>
+</dialog>
+
+
+<script defer>
+
+  var quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+	LoadBOD()
+	loadlbcal()
+	loaddateloc()
+	loadLOC()
+	getusers()
+	let selectID = ''
+	let BODname = ''
+	let BODcallsign = ''
+	let BODimage = ''
+	let BODfiles = []
+	let lbid = ''
+	const photoInput = document.getElementById('uploader');
+	const modal = document.querySelector("[data-modal]")
+	const LBlist = document.getElementById('lbLocationList')
+	const lblocation = document.getElementById('lbloctext')
+	const lbaddress = document.getElementById('lbaddresstext')
+	const lbadd = document.getElementById('lbadd')
+	const lbsave = document.getElementById('lbsave')
+	const lbleft = document.getElementById('lbleft')
+	const datesSelectList = document.querySelectorAll('.lbcallist')
+
+// ****************************************************************************************************************************************
+// ****                                                 Lunch Bunch Tab                                                                ****
+// ****************************************************************************************************************************************
+lbsave.style.display = "none"
+
+function loadLOC() {
+	fetch('/lblist')
+  		.then(response => response.json())
+  		.then(data => {
+			
+			LBlist.innerHTML = '<option>Select a Location</option>'
+			for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+				LBlist.innerHTML += `<option>${obj.location}</option>`
+        	}  
+		})
+}
+
+LBlist.addEventListener('change', () => {
+		if(LBlist.value == 'Select a Location') {
+			lblocation.value = ''
+			lbaddress.value = ''
+			lbadd.style.display = "block"
+			lbsave.style.display = "none"
+		} else {
+			fetch(`/lblistdetail?location=${LBlist.value}`)
+			.then(response => response.json())
+			.then(data => {
+				lbid = data[0].id
+				lblocation.value = data[0].location
+				lbaddress.value = data[0].address
+				lbadd.style.display = "none"
+				lbsave.style.display = "block"
+			})
+		}
+	})
+
+	function updateloc() {
+		let lbupdatedata = {
+		id:lbid,
+		location: lblocation.value.replace(`'`, ""),
+		address: lbaddress.value
+	}
+
+	fetch(`/lblistupdate`, {
+        method: 'POST',
+        body: JSON.stringify(lbupdatedata),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				if(data.affectedRow = 1) {
+					lblocation.value = ''
+					lbaddress.value = ''
+					lbadd.style.display = "block"
+					lbsave.style.display = "none"
+					loadlbcal()
+					loaddateloc()
+					loadLOC()
+				}
+			});
+	}
+
+	function addloc() {
+		let addloc = {
+		location: lblocation.value.replace("'", ""),
+		address: lbaddress.value
+	}
+	
+	if(lblocation.value.length == 0) {
+		alert("Enter a Location")
+		return
+	}
+
+	if(lbaddress.value.length == 0) {
+		alert("Enter an address")
+		return
+	}
+
+	fetch(`/addloc`, {
+        method: 'POST',
+        body: JSON.stringify(addloc),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				if(data.affectedRow = 1) {
+					lblocation.value = ''
+					lbaddress.value = ''
+					lbadd.style.display = "block"
+					lbsave.style.display = "none"
+					loadlbcal()
+					loaddateloc()
+					loadLOC()
+				}
+			});
+	}
+
+	function loadlbcal() {
+		fetch('/lbdates')
+  		.then(response => response.json())
+  		.then(data => {
+			lbleft.innerHTML = ''
+			LBlist.innerHTML = '<option>Select a Location</option>'
+			for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+				lbleft.innerHTML += `
+					<div class="lb-box">
+					<div class="lb-date">Date<br>${obj.start}</div>
+					<div class="lb-location">Location<br>${obj.location}</div>
+					<div> 
+						<select class="lb-loc-select lbcallist" id="lbcalloc${obj.id}" onchange="updatelbcal(${obj.id})">
+							<option>Select a Location</option>
+						</select>
+					</div>
+				</div>
+				`
+        	}  
+		})
+	}
+
+function loaddateloc() {
+	fetch('/lblist')
+  		.then(response => response.json())
+  		.then(data => {
+			const selectElements = document.querySelectorAll('.lbcallist');
+			selectElements.forEach(selectElement => {
+				selectElement.innerHTML = '<option>Select a Location</option>';
+				for (let i = 0; i < data.length; i++) {
+					let obj = data[i];
+					const newOption = document.createElement('option');
+					newOption.text = obj.location;
+					newOption.value = obj.location;
+					selectElement.appendChild(newOption);
+				}
+			});
+		});
+}
+
+
+function updatelbcal(id) {
+	let lbupdatecaldata = {id:id, location: document.getElementById('lbcalloc' + id).value}
+	fetch(`/lbupdatecalloc`, {
+        method: 'POST',
+        body: JSON.stringify(lbupdatecaldata),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				if(data.changedRows == 1) {
+					loadlbcal()
+					loaddateloc()
+					loadLOC()
+				}
+			});
+}
+
+
+
+
+
+
+
+
+
+
+
+	
+
+// ****************************************************************************************************************************************
+// ****                                                  BOD Admin Tab                                                                 ****
+// ****************************************************************************************************************************************
+
+
+	function bodDialogclose() {
+		modal.close()
+	}
+
+	function loadImages(id) {
+		modal.showModal()
+		sessionStorage.setItem('adminID', id)
+		selectID = id
+		BODname = document.getElementById(`bodname${id}`).innerHTML
+		BODcallsign = document.getElementById(`callsign${id}`).innerHTML
+		BODcurrentimage = document.getElementById(`bodimg${id}`).src
+		BODcurrentimageid = 0
+
+		fetch('/files')
+  		.then(response => response.json())
+  		.then(data => {
+			document.getElementById('admindialog').innerHTML = `
+	
+				<input type="file" class="upload hide" id="uploader" accept=".jpg, .jpeg" onchange="bodupload();">
+
+			<div class="bod-wrapper">
+				<div><input type="text" name="" id="bodnametext"></div>
+				<div><input type="text" name="" id="bodcallsigntext"></div>
+				
+				<div><a class="btn btn-sm btn-success" role="button" onclick="document.getElementById('uploader').click()" >Add A Photo</a></div>
+				
+
+				<div><button class="btn btn-action btn-lg" onclick="BODsave(${id})">Save</button></div>
+			</div>
+			<div id="bodfiles" class="bodfiles"></div>`
+
+			document.getElementById('bodnametext').value = BODname
+			document.getElementById('bodcallsigntext').value = BODcallsign
+
+
+			for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+				BODfiles.push(obj)
+
+				if(obj == BODcurrentimage.split('/')[5]) {
+					BODcurrentimageid = i
+				}
+				document.getElementById('bodfiles').innerHTML += `
+				<div class="bodfiles-item">
+					<img class="bodfiles-img" id="bodimgfile${i}" src="/img/bod/${obj}" onclick="selectBODimg(${i})">
+				</div>`
+         }  
+		 	const elements = document.querySelectorAll('.bod-img-selected');
+			elements.forEach((element) => {element.classList.remove('bod-img-selected')});
+			document.getElementById(`bodimgfile${BODcurrentimageid}`).classList.add("bod-img-selected")
+			BODimage = document.getElementById(`bodimgfile${BODcurrentimageid}`).src
+	     });
+	}
+
+	function reloadImages(id) {
+		sessionStorage.setItem('adminID', id)
+		selectID = id
+		BODname = document.getElementById(`bodname${id}`).innerHTML
+		BODcallsign = document.getElementById(`callsign${id}`).innerHTML
+		BODcurrentimage = document.getElementById(`bodimg${id}`).src
+		BODcurrentimageid = 0
+
+		fetch('/files')
+  		.then(response => response.json())
+  		.then(data => {
+			document.getElementById('admindialog').innerHTML = `
+	
+				<input type="file" class="upload hide" id="uploader" accept=".jpg, .jpeg" onchange="bodupload();">
+
+			<div class="bod-wrapper">
+				<div><input type="text" name="" id="bodnametext"></div>
+				<div><input type="text" name="" id="bodcallsigntext"></div>
+				
+				<div><a class="btn btn-sm btn-success" role="button" onclick="document.getElementById('uploader').click()" >Add A Photo</a></div>
+				
+
+				<div><button class="btn btn-action btn-lg" onclick="BODsave(${id})">Save</button></div>
+			</div>
+			<div id="bodfiles" class="bodfiles"></div>`
+
+			document.getElementById('bodnametext').value = BODname
+			document.getElementById('bodcallsigntext').value = BODcallsign
+			BODimage = BODcurrentimage
+
+			for(let i = 0; i < data.length; i++) {
+            	let obj = data[i]
+				BODfiles.push(obj)
+
+				if(obj == BODcurrentimage.split('/')[5]) {
+					BODcurrentimageid = i
+				}
+				document.getElementById('bodfiles').innerHTML += `
+				<div class="bodfiles-item">
+					<img class="bodfiles-img" id="bodimgfile${i}" src="/img/bod/${obj}" onclick="selectBODimg(${i})">
+				</div>`
+         }  
+		 	const elements = document.querySelectorAll('.bod-img-selected');
+			elements.forEach((element) => {element.classList.remove('bod-img-selected')});
+			document.getElementById(`bodimgfile${BODcurrentimageid}`).classList.add("bod-img-selected")			
+	     });
+	}
+
+	function selectBODimg(clickimage) {
+		BODimage = BODfiles[clickimage]
+		const elements = document.querySelectorAll('.bod-img-selected');
+		elements.forEach((element) => {element.classList.remove('bod-img-selected')});
+		document.getElementById(`bodimgfile${clickimage}`).classList.add("bod-img-selected")
+	}
+
+	function BODsave(id) {
+		if(document.getElementById('bodnametext').value == '') {
+			alert("Please enter a name.")
+			return
+		}
+
+			if(document.getElementById('bodcallsigntext').value == '') {
+			alert("Please enter a callsign.")
+			return
+		}
+		
+		let BODinfo = {
+			name: document.getElementById('bodnametext').value,
+			callsign: document.getElementById('bodcallsigntext').value,
+			image: `/img/bod/${BODimage}`
+		}
+		console.log(BODinfo)
+
+		fetch(`/bodmembers?id=${id}`, {
+        method: 'POST',
+        body: JSON.stringify(BODinfo),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				if(data.affectedRow = 1) {
+					modal.close()
+					LoadBOD()
+				}
+			});
+	}
+
+	function openCity(evt, cityName) {
+	var i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName("tabcontent");
+	for (i = 0; i < tabcontent.length; i++) {
+		tabcontent[i].style.display = "none";
+	}
+	tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+	document.getElementById(cityName).style.display = "block";
+	evt.currentTarget.className += " active";
+	}
+
+	function LoadBOD() {
+		fetch('/bodmembers')
+  		.then(response => response.json())
+  		.then(data => {
+			if(data[0].image.length <= 0) {
+				document.getElementById(`bodimg1`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg1`).src = data[0].image
+				{{!-- console.log('BOD Image:' + BODimage)
+				console.log(data[0].image.replace('/img/bod/', '')) --}}
+			}
+			document.getElementById(`bodname1`).innerHTML = data[0].name
+			document.getElementById(`bodtitle1`).innerHTML = data[0].position
+			document.getElementById('callsign1').innerHTML = data[0].callsign
+
+			if(data[1].image.length <= 0) {
+				document.getElementById(`bodimg2`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg2`).src = data[1].image
+			}
+			document.getElementById(`bodname2`).innerHTML = data[1].name
+			document.getElementById(`bodtitle2`).innerHTML = data[1].position
+			document.getElementById('callsign2').innerHTML = data[1].callsign
+
+			if(data[2].image.length <= 0) {
+				document.getElementById(`bodimg3`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg3`).src = data[2].image
+			}
+			document.getElementById(`bodname3`).innerHTML = data[2].name
+			document.getElementById(`bodtitle3`).innerHTML = data[2].position
+			document.getElementById('callsign3').innerHTML = data[2].callsign
+
+			if(data[3].image.length <= 0) {
+				document.getElementById(`bodimg4`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg4`).src = data[3].image
+			}
+			document.getElementById(`bodname4`).innerHTML = data[3].name
+			document.getElementById(`bodtitle4`).innerHTML = data[3].position
+			document.getElementById('callsign4').innerHTML = data[3].callsign
+
+			if(data[4].image.length <= 0) {
+				document.getElementById(`bodimg5`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg5`).src = data[4].image
+			}
+			document.getElementById(`bodname5`).innerHTML = data[4].name
+			document.getElementById(`bodtitle5`).innerHTML = data[4].position
+			document.getElementById('callsign5').innerHTML = data[4].callsign
+
+			if(data[5].image.length <= 0) {
+				document.getElementById(`bodimg6`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg6`).src = data[5].image
+			}
+			document.getElementById(`bodname6`).innerHTML = data[5].name
+			document.getElementById(`bodtitle6`).innerHTML = data[5].position
+			document.getElementById('callsign6').innerHTML = data[5].callsign
+
+			if(data[6].image.length <= 0) {
+				document.getElementById(`bodimg7`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg7`).src = data[6].image
+			}
+			document.getElementById(`bodname7`).innerHTML = data[6].name
+			document.getElementById(`bodtitle7`).innerHTML = data[6].position
+			document.getElementById('callsign7').innerHTML = data[6].callsign
+
+			if(data[7].image.length <= 0) {
+				document.getElementById(`bodimg8`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg8`).src = data[7].image
+			}
+			document.getElementById(`bodname8`).innerHTML = data[7].name
+			document.getElementById(`bodtitle8`).innerHTML = data[7].position
+			document.getElementById('callsign8').innerHTML = data[7].callsign
+
+			if(data[8].image.length <= 0) {
+				document.getElementById(`bodimg9`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg9`).src = data[8].image
+			}
+			document.getElementById(`bodname9`).innerHTML = data[8].name
+			document.getElementById(`bodtitle9`).innerHTML = data[8].position
+			document.getElementById('callsign9').innerHTML = data[8].callsign
+	   });
+	}
+
+    async function bodupload(){
+
+      const photoFile = document.getElementById('uploader').files[0];
+	  console.log(photoFile)
+      const photoData = await readPhotoFile(photoFile);
+
+      const response = await fetch('/bodupload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ photo: photoData })
+      });
+
+      if (response.ok) {
+       reloadImages(sessionStorage.getItem('adminID'))
+      } else {
+        alert('Failed to upload photo');
+      }
+    };
+
+    function readPhotoFile(photoFile) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          const photoData = reader.result.split(',')[1];
+          resolve(photoData);
+        });
+        reader.addEventListener('error', () => {
+          reject(new Error('Failed to read photo file'));
+        });
+        reader.readAsDataURL(photoFile);
+      });
+    }
+
+
+
+// ****************************************************************************************************************************************
+// ****                                                 User Admin Tab                                                                 ****
+// ****************************************************************************************************************************************
+
+// id="user-table"
+
+function getusers() {
+	fetch(`/users`, {
+        method: 'GET',
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('user-table').innerHTML += `
+					<td>${obj.callsign}</td>
+					<td>${obj.name}</td>
+					<td><input onclick="(updateuserstatus(${obj.id}))" type="checkbox" ${rightcheck(obj.status)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'admin'))" type="checkbox" ${rightcheck(obj.admin)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'bod'))" type="checkbox" ${rightcheck(obj.bod)} ></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'testing'))" type="checkbox" ${rightcheck(obj.testing)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'photos'))" type="checkbox" ${rightcheck(obj.photos)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'ares'))" type="checkbox" ${rightcheck(obj.ares)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'repeater'))" type="checkbox" ${rightcheck(obj.repeater)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'calendar'))" type="checkbox" ${rightcheck(obj.calendar)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'users'))" type="checkbox" ${rightcheck(obj.users)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'lunch'))" type="checkbox" ${rightcheck(obj.lunch)}></td>
+				`
+				}
+			});
+}
+
+function rightcheck(status) {
+	if(status == "Yes") {
+		return "checked"
+	}
+	else if(status == "Active") {
+		return "checked"
+	}
+}
+
+function updateuserstatus(id) {
+	let userstatus = ""
+	fetch(`/userstatus`, {
+        method: 'POST',
+		body: JSON.stringify({userid: id}),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+			});
+}
+
+function updateuserrights(id, right) {
+
+	console.log(id + " | " + right)
+
+
+	fetch(`/userright`, {
+        method: 'POST',
+		body: JSON.stringify({userid: id, userright: right}),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+			});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+		
+			<!-- /Sidebar -->
+
+		</div>
+	</div>	<!-- /container -->
+
+	    <script>
+
+      
+    </script>
+		<div class="footer2">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 widget">
+						<div class="widget-body">
+							<p class="text-right">
+								Copyright &copy; 2022, .
+							</p>
+						</div>
+					</div>
+
+				</div> <!-- /row of widgets -->
+			</div>
+		</div>
+	</footer>	
+		
+
+
+
+
+	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/assets/js/headroom.min.js"></script>
+	<script src="/assets/js/jQuery.headroom.min.js"></script>
+	<script src="/assets/js/template.js"></script>
+</body>
+</html>

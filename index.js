@@ -1,18 +1,17 @@
 const express = require('express')
 const mysql = require('mysql')
 const app = express()
-const multer = require("multer");
-const upload = multer({ dest: "./public/img" });
 const dotenv = require('dotenv');
 const path = require('path');
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { re, im } = require('mathjs');
-//var parser = require('fast-xml-parser');
-const { compareObjs } = require('fullcalendar');
-//fetch = require('node-fetch')
+const { compareObjs, collectFromHash } = require('fullcalendar');
 dotenv.config({ path: './.env'});
+const fs = require('fs');
 const port = 80;
+
+
 
 
 var connection = mysql.createConnection({
@@ -25,16 +24,14 @@ connection.connect();
 
 app.set('view engine', 'handlebars')
 app.set('view engine', 'hbs');
-const publicDirectory = path.join(__dirname, './public');
-app.use(express.static(publicDirectory));
+app.use(express.static(path.join(__dirname, './public')));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json({limit: '7mb'}));
 
-function authenticateTocken(req, res, nex) {
+function authenticateToken(req, res, nex) {
   const authHeader = req.headers['authorization']
   const token = authHeader &&  authHeader.split(' ')[1]
   if(token == null) return res.sendStatus(401);
-
   jwt.verify(token, process.env.jwt_secret, (err, user) => {
     if(err) return res.sendStatus(403)
     req.user = user
@@ -42,22 +39,210 @@ function authenticateTocken(req, res, nex) {
   })
 }
 
-
 function convertxml(xml) {
   fetch(`https://api.factmaven.com/xml-to-json?xml=${xml}`)
   .then(response => response.json())
   .then(data => {
-    console.log(data)
     return data;
   });
 }
 
-// ****************************************
-// ****************************************
-// ****       Rendering Pages          ****
-// ****************************************
-// ****************************************
 
+//  ****************************************
+// ****************************************
+// ****        User Functions          ****
+// ****************************************
+// ****************************************
+app.post('/register', async (req, res) => {
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+    let userdata = {callsign: req.body.callsign, password: hashedPassword, name:req.body.name, email:req.body.email, admin: 'No', status: 'Pending'}
+      connection.query(`SELECT callsign FROM users WHERE callsign=${connection.escape(req.body.callsign)}`, function (error, results, fields) {
+        if (error) throw error;
+          if(results == "") {
+            connection.query('INSERT INTO users SET ?', userdata, function (error, results, fields) {
+              if (error) throw error;
+              res.send("registered");
+            });
+          }else {
+            
+            res.send(`Username ${req.body.callsign} is already registered!`);
+          }
+      });
+    }
+    catch (exception_var) {
+      console.log(exception_var)
+    }
+
+})
+
+app.post('/login', async (req, res) => {
+const callsign = {callsign: req.body.callsign}
+const accesstoken = jwt.sign(callsign, process.env.jwt_secret)
+try {
+  connection.query(`SELECT * FROM users WHERE callsign='${req.body.callsign}'`, function (error, results, fields) {
+    //if (error) throw error;
+    if(results == "") {
+      res.send({status: "Incorrect username or password!"})
+    } else {
+
+      bcrypt.compare(req.body.password, results[0].password, function(err, isMatch) {
+        if (err) {
+          throw err
+        } else if (!isMatch) {
+          res.send({status: "Incorrect username or password!"})
+          // console.log("fail")
+        } else {  
+          connection.query(`SELECT status FROM users Where callsign='${req.body.callsign}'`, function (error, statusresults, fields) {            
+            if(statusresults[0].status == 'Active') {
+              res.send({status: "pass", callsign: req.body.callsign, token: accesstoken})
+            } else {
+              res.send({status: `Your account status: ${statusresults[0].status}`})
+              // console.log("pass")
+            }
+          })
+         }
+      })
+    }
+  });
+}
+catch (exception_var) {
+  //console.log("error")
+}
+
+})
+
+app.get('/auth', authenticateToken, (req, res) => {
+  res.send('authorized')
+})
+
+app.post('/bodmembers', authenticateToken, (req, res) => {
+  let id =  req.query.id
+  try {
+    connection.query(`UPDATE bod SET name='${req.body.name}', callsign='${req.body.callsign}', image='${req.body.image}' WHERE id='${id}'`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+
+    });
+  }
+  catch (exception_var) {
+    console.log("Error" + exception_var);
+  }
+})
+
+
+app.get('/adminauth', (req, res) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader &&  authHeader.split(' ')[1]
+  if(token == null) return res.sendStatus(401);
+  jwt.verify(token, process.env.jwt_secret, (err, user) => {
+    if(err) return res.sendStatus(403)
+    req.user = user
+    try {
+      connection.query(`SELECT admin FROM users WHERE callsign = '${user.callsign}'`, function (error, results, fields) {
+        if (error) throw error;
+        res.send(results[0].admin);
+  
+      });
+    }
+    catch (exception_var) {
+      console.log("Error" + exception_var);
+    }
+  })
+})
+
+
+app.get('/users', authenticateToken, (req, res) => {
+
+  try {
+    connection.query(`Select * From users`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.post('/userstatus', authenticateToken, (req, res) => {
+  function statuscheck(status) {
+    if(status == "Pending" || status == "Disabled") {
+      return "Active"
+    } else {
+      return "Disabled"
+    }
+  }
+  try {
+    connection.query(`Select status From users WHERE id='${req.body.userid}'`, function (error, results, fields) {
+      if (error) throw error;
+      try {
+        connection.query(`UPDATE users SET status = '${statuscheck(results[0].status)}' WHERE id='${req.body.userid}'`, function (error1, results1, fields) {
+          if (error1) throw error1;
+            console.log(results1)
+          
+          
+        });
+      }
+      catch (exception_var) {
+        console.log("Error");
+      }
+    
+      
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.post('/userright', authenticateToken, (req, res) => {
+  function userright(status) {
+    if (status == "No" || status == "") {
+      return "Yes";
+    } else {
+      return "No";
+    }
+  }
+
+  try {
+    const userRightField = req.body.userright; // Store the userRight field name
+
+    connection.query(`SELECT ${userRightField} FROM users WHERE id='${req.body.userid}'`, function (error, results, fields) {
+      if (error) throw error;
+      try {
+        connection.query(`UPDATE users SET ${userRightField} = '${userright(results[0][userRightField])}' WHERE id='${req.body.userid}'`, function (error1, results1, fields) {
+          if (error1) throw error1;
+          console.log(results1)
+        });
+      } catch (exception_var) {
+        console.log("Error");
+      }
+    });
+  } catch (exception_var) {
+    console.log("Error");
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ****************************************
+// ****************************************
+// ****     Public Rendering Pages     ****
+// ****************************************
+// ****************************************
 app.get('/', (req, res) => {
   res.render('index')
 })
@@ -90,9 +275,6 @@ app.get('/iaspota', (req, res) => {
   res.render('iaspota')
 })
 
-app.get('/test', (req, res) => {
-  res.render('upload')
-})
 
 app.get('/logger', (req, res) => {
   res.render('logger')
@@ -105,6 +287,37 @@ app.get('/fdlogger', (req, res) => {
 app.get('/photos', (req, res) => {
   res.render('photos')
 })
+
+
+
+
+app.get('/test', (req, res) => {
+  res.render('test')
+})
+
+
+// ****************************************
+// ****************************************
+// ****    Members Rendering Pages     ****
+// ****************************************
+// ****************************************
+
+
+app.get('/admin',(req, res) => {
+  res.render('admin')
+})
+
+app.get('/login', (req, res) => {
+  res.render('login')
+})
+
+app.get('/signup', (req, res) => {
+  res.render('signup')
+})
+
+
+
+
 
 
 // ****************************************
@@ -183,6 +396,19 @@ app.get('/testing', (req, res) => {
   }
  })
 
+ app.get('/bodmembers', (req, res) => {
+ 
+  try {
+    connection.query(`SELECT * from bod`, function (error, results, fields) {
+      if (error) throw error;
+    
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
 
 // ****************************************************************************************************************************************
 // ****                                                  IASPOTA API's                                                                 ****
@@ -264,8 +490,6 @@ app.get('/aispotalogs', (req, res) => {
     console.log("Error");
     }
   }
-
-
 
 app.get('/rrdepots', (req, res) => {
  try {
@@ -362,7 +586,7 @@ app.get('/rrcount', (req, res) => {
 app.post('/rrlog', (req, res) => {
   let data = req.body;
   let DateNow = new Date().toISOString().substring(0, 10);
-  console.log(DateNow)
+
 
 
 
@@ -456,6 +680,7 @@ app.post('/rrlog', (req, res) => {
     console.log("Error");
   }
  })
+
 // ****************************************************************************************************************************************
 // ****                                                Field Day API's                                                                 ****
 // ****************************************************************************************************************************************
@@ -501,9 +726,6 @@ app.get('/qrzLookUp', (req, res) => {
                 catch (exception_var) {
                   console.log("Error");
                 }
-
-
-
 
                 //console.log(logdata)
                 let calldata = {
@@ -592,6 +814,181 @@ app.get('/qrzLookUp', (req, res) => {
     console.log("Error");
   }
  })
+
+ app.get('/bodimages', (req, res) => {
+  const imageFolder = path.join(__dirname);
+  fs.readdir(imageFolder, (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+      return;
+    }
+
+    const images = files.filter(file => {
+      const ext = path.extname(file);
+      return ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif';
+    });
+
+    res.json(images);
+  });
+});
+
+app.get('/files', (req, res) => {
+  const fileFolder = path.join(__dirname, '/public/img/bod');
+  fs.readdir(fileFolder, (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+      return;
+    }
+    res.json(files);
+  });
+});
+
+app.post('/bodupload', (req, res) => {
+  const photoData = req.body.photo;
+
+  // decode base64 data into binary data
+  const binaryData = Buffer.from(photoData, 'base64');
+
+  // generate a unique filename for the photo
+  const filename = Date.now() + '.jpg';
+
+  // set the path where the photo will be saved
+  const imagePath = path.join(__dirname, '/public/img/bod/', filename);
+
+  // write binary data to file
+  fs.writeFile(imagePath, binaryData, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Failed to upload photo');
+    } else {
+      res.send('Photo uploaded successfully');
+    }
+  });
+});
+
+app.get('/lbdates', (req, res) => {
+  let image = req.body;
+  try {
+    connection.query(`SELECT * FROM calendar WHERE start >= DATE_ADD(CURDATE(), INTERVAL (7 - WEEKDAY(CURDATE())) DAY)   AND start <= DATE_ADD(CURDATE(), INTERVAL (7 - WEEKDAY(CURDATE())) + 6 * 7 DAY)`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/lblist', (req, res) => {
+  
+  try {
+    connection.query(`SELECT * FROM lunch_locations Order BY location Asc`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.get('/lblistdetail', (req, res) => {
+  let location = req.query.location;
+  try {
+    connection.query(`SELECT * FROM lunch_locations Where location='${location}'`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.post('/lblistupdate', authenticateToken,  (req, res) => {
+  try {
+    connection.query(`UPDATE lunch_locations SET location='${req.body.location}', address='${req.body.address}' Where id='${req.body.id}'`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+
+ app.post('/addloc', authenticateToken,  (req, res) => {
+  try {
+    connection.query(`INSERT INTO lunch_locations SET ?`, req.body, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+ })
+ 
+ app.post('/lbupdatecalloc', authenticateToken,  (req, res) => {
+  try {
+    connection.query(`SELECT * FROM lunch_locations WHERE location='${req.body.location}'`, function (error, results, fields) {
+      if (error) throw error;
+      
+      try {
+        let caldesc = results[0].location + ' ' + results[0].address
+        //console.log(`UPDATE calendar SET description='${caldesc}', location='${results[0].location}', address='${results[0].address}' WHERE id='${results[0].id}'`)
+        connection.query(`UPDATE calendar SET description='${caldesc}', location='${results[0].location}', address='${results[0].address}' WHERE id='${req.body.id}'`, function (error1, results1, fields1) {
+          if (error1) throw error1;
+         //console.log(results1)
+          res.send(results1)
+        });
+      }
+      catch (exception_var) {
+        console.log("Error");
+      }
+
+
+
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+
+
+
+
+
+ })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

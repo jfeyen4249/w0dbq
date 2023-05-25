@@ -60,75 +60,75 @@
 				</header>
 				<p>
 					<div class="card">
-				<img src="/img/k0dan.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg1" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Dan Shireman</b></h4> 
-					<p>President</p> 
+					<h4><b id="bodname1"></b><br><b id="callsign1"></b></h4> 
+					<p id="bodtitle1"></p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/w9upk.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg2" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Colin Wheatley</b></h4> 
-					<p>Vice President</p> 
+					<h4><b id="bodname2"></b><br><b id="callsign2"></b></h4> 
+					<p id="bodtitle2"></p> 
 				</div>
 			</div>
 
 
 			<div class="card">
-				<img src="/img/kd9ipk.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg3" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Dan Tindell</b></h4> 
-					<p>Secretary</p> 
+					<h4><b id="bodname3">Dan Tindell</b><br><b id="callsign3"></b></h4> 
+					<p id="bodtitle3">Secretary</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/img_avatar.png" alt="Avatar" style="width:100%">
+				<img id="bodimg4" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Robert Smith</b></h4> 
-					<p>Treasurer</p> 
+					<h4><b id="bodname4">Robert Smith</b><br><b id="callsign4"></b></h4> 
+					<p id="bodtitle4">Treasurer</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/img_avatar.png" alt="Avatar" style="width:100%">
+				<img id="bodimg5" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Fred Miller</b></h4> 
-					<p>Trustee</p> 
+					<h4><b id="bodname5">Fred Miller</b><br><b id="callsign5"></b></h4> 
+					<p id="bodtitle5">Trustee</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/ka0kao.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg6" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Kelly Allen</b></h4> 
-					<p>Repeater Chairman</p> 
+					<h4><b id="bodname6">Kelly Allen</b><br><b id="callsign6"></b></h4> 
+					<p id="bodtitle6">Repeater Chairman</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/wa2pux.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg7" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Ralph Gable</b></h4> 
-					<p>At Large</p> 
+					<h4><b id="bodname7">Ralph Gable</b><br><b id="callsign7"></b></h4> 
+					<p id="bodtitle7">At Large</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/n0lue.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg8" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Mark Manternach</b></h4> 
-					<p>At Large</p> 
+					<h4><b id="bodname8">Mark Manternach</b><br><b id="callsign8"></b></h4> 
+					<p id="bodtitle8">At Large</p> 
 				</div>
 			</div>
 
 			<div class="card">
-				<img src="/img/kd9hae.jpg" alt="Avatar" style="width:100%">
+				<img id="bodimg9" src="" alt="Avatar" style="width:100%">
 				<div class="bod-container">
-					<h4><b>Joe Feyen</b></h4> 
-					<p>Past President</p> 
+					<h4><b id="bodname9">Joe Feyen</b><br><b id="callsign9"></b></h4> 
+					<p id="bodtitle9">Past President</p> 
 				</div>
 			</div>
 				</p>
@@ -170,7 +170,94 @@
 		</div>
 	</footer>	
 		
+	<script>
+		fetch('/bodmembers')
+  		.then(response => response.json())
+  		.then(data => {
+			console.log(data)
 
+			if(data[0].image.length <= 0) {
+				document.getElementById(`bodimg1`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg1`).src = data[0].image
+			}
+			document.getElementById(`bodname1`).innerHTML = data[0].name
+			document.getElementById(`bodtitle1`).innerHTML = data[0].position
+			document.getElementById('callsign1').innerHTML = data[0].callsign
+
+			if(data[1].image.length <= 0) {
+				document.getElementById(`bodimg2`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg2`).src = data[1].image
+			}
+			document.getElementById(`bodname2`).innerHTML = data[1].name
+			document.getElementById(`bodtitle2`).innerHTML = data[1].position
+			document.getElementById('callsign2').innerHTML = data[1].callsign
+
+			if(data[2].image.length <= 0) {
+				document.getElementById(`bodimg3`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg3`).src = data[2].image
+			}
+			document.getElementById(`bodname3`).innerHTML = data[2].name
+			document.getElementById(`bodtitle3`).innerHTML = data[2].position
+			document.getElementById('callsign3').innerHTML = data[2].callsign
+
+			if(data[3].image.length <= 0) {
+				document.getElementById(`bodimg4`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg4`).src = data[3].image
+			}
+			document.getElementById(`bodname4`).innerHTML = data[3].name
+			document.getElementById(`bodtitle4`).innerHTML = data[3].position
+			document.getElementById('callsign4').innerHTML = data[3].callsign
+
+			if(data[4].image.length <= 0) {
+				document.getElementById(`bodimg5`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg5`).src = data[4].image
+			}
+			document.getElementById(`bodname5`).innerHTML = data[4].name
+			document.getElementById(`bodtitle5`).innerHTML = data[4].position
+			document.getElementById('callsign5').innerHTML = data[4].callsign
+
+			if(data[5].image.length <= 0) {
+				document.getElementById(`bodimg6`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg6`).src = data[5].image
+			}
+			document.getElementById(`bodname6`).innerHTML = data[5].name
+			document.getElementById(`bodtitle6`).innerHTML = data[5].position
+			document.getElementById('callsign6').innerHTML = data[5].callsign
+
+			if(data[6].image.length <= 0) {
+				document.getElementById(`bodimg7`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg7`).src = data[6].image
+			}
+			document.getElementById(`bodname7`).innerHTML = data[6].name
+			document.getElementById(`bodtitle7`).innerHTML = data[6].position
+			document.getElementById('callsign7').innerHTML = data[6].callsign
+
+			if(data[7].image.length <= 0) {
+				document.getElementById(`bodimg8`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg8`).src = data[7].image
+			}
+			document.getElementById(`bodname8`).innerHTML = data[7].name
+			document.getElementById(`bodtitle8`).innerHTML = data[7].position
+			document.getElementById('callsign8').innerHTML = data[7].callsign
+
+			if(data[8].image.length <= 0) {
+				document.getElementById(`bodimg9`).src = '/img/bod/img.png'
+			}else{
+				document.getElementById(`bodimg9`).src = data[8].image
+			}
+			document.getElementById(`bodname9`).innerHTML = data[8].name
+			document.getElementById(`bodtitle9`).innerHTML = data[8].position
+			document.getElementById('callsign9').innerHTML = data[8].callsign
+	   });
+	</script>
 
 
 

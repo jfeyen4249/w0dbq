@@ -9,7 +9,7 @@
 	<title>W0DBQ: Calendar</title>
 	<script src="https://apis.google.com/js/api.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
+	<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
 	
 	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
@@ -64,7 +64,7 @@
 
 	    <script>
 
-      var apiKey = 'AIzaSyD2OJVXHkBg_2G9rA2-c6om27wGp4KPokU';
+      var apiKey = 'AIzaSyA4yV36WleTGnCxoqXDpgSejnCX32CnwZs';
 
 // Replace PLAYLIST_ID with the ID of the playlist you want to retrieve
 var playlistId = 'PLQWlmCpIIbNz4OaG1ji9I7L7SP-uXmNmZ';
@@ -84,18 +84,21 @@ gapi.load('client', function() {
     // Execute the request and process the response
     request.execute(function(response) {
       var videos = [];
-
+		
       // Add each video to the videos array
       response.items.forEach(function(item) {
-        var videoId = item.snippet.resourceId.videoId;
+        try {
+			var videoId = item.snippet.resourceId.videoId;
         var videoTitle = item.snippet.title;
-        var videoThumbnail = item.snippet.thumbnails.standard.url;
+        var videoThumbnail = item.snippet.thumbnails.standard;
+		console.log(item.snippet.thumbnails.medium.url)
         var videoUrl = 'https://www.youtube.com/watch?v=' + videoId;
         videos.push({
           title: videoTitle,
           thumbnail: videoThumbnail,
           url: videoUrl,
           published: item.snippet.publishedAt
+		}
         });
       });
 
