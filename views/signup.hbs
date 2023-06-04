@@ -115,6 +115,11 @@
 
 
 	<script>
+			window.addEventListener('keypress', function(event) {
+			if (event.keyCode === 13) {
+				register()
+			}
+		});
 
 		let callsign = document.getElementById("callsign")
 		let name = document.getElementById("name")

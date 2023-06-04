@@ -86,7 +86,7 @@
 										<b><a href="">Forgot password?</a></b>
 									</div>
 									<div class="col-lg-4 text-right">
-										<button class="btn btn-action" onclick=" login()">Sign in</button>
+										<button class="btn btn-action" id="loginbtn" onclick=" login()">Sign in</button>
 									</div>
 								</div>
 							
@@ -108,6 +108,13 @@
 	</footer>	
 		
 	<script>
+		window.addEventListener('keypress', function(event) {
+			if (event.keyCode === 13) {
+				login()
+			}
+		});
+
+
 		async function login() {
 		
     // const formData = new FormData();
