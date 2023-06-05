@@ -763,13 +763,12 @@ function updateuserstatus(id) {
         headers: myHeaders})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
+				
 			});
 }
 
 function updateuserrights(id, right) {
 
-	console.log(id + " | " + right)
 
 
 	fetch(`/userright`, {
