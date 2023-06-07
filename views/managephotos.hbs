@@ -5,7 +5,7 @@
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
-		<script src="/auth.js"></script>
+	<script src="/auth.js"></script>
 	<script>
 		mediaauth()
 	</script>
@@ -51,20 +51,13 @@
 
 		<ol class="breadcrumb">
 			<li><a href="index.html">Home</a></li>
-			<li class="active">Media Upload</li>
+			<li class="active">Manage Photos and Videos</li>
 		</ol>
 
 		<div class="row">
 			
 			<div class="media-main">
-				<div class="media-upload">
-					<form action="/uploadmedia" method="POST" enctype="multipart/form-data">
-						<input type="file" name="files" multiple>
-						<input type="submit" value="Upload">
-					</form>
-					<hr>
-				</div>
-
+				
 				<div class="mediaimages" id="mediaimages">
 
 					<div class="mediaimagesbox" id="mediabox">
@@ -83,14 +76,14 @@
 	</div>	<!-- /container -->
 
 	    <script>
+			
 		
-		fetch('/uploadmedia?type=New',{
+		fetch('/uploadmedia?type=Yes',{
 			method: 'GET',
 			headers: myHeaders
 		})
   		.then(response => response.json())
   		.then(data => {
-		
 			  for(let i = 0; i < data.length; i++) {
             	let obj = data[i]
 				if(data[i].filetype == 'image'){
@@ -100,29 +93,30 @@
 								</div>
 								<div>
 									<h4>Short Description</h4>
-									<input type="text" id="short${obj.id}" class="media-select">		
+									<input type="text" id="short${obj.id}" class="media-select" value="${obj.shortinfo}">		
 
 									<h4>Full Description</h4>
-									<textarea class="media-text" id="long${obj.id}" cols="30" rows="10"></textarea>
+									<textarea class="media-text" id="long${obj.id}" cols="30" rows="10">${obj.shortinfo}</textarea>
 									<br>
 									<h4>Category</h4>
 									<select class="media-select" id="cat${obj.id}">
-										<option>Gallery</option>
-										<option>Ares</option>
-										<option>Field Day</option>
+										<option ${obj.type === 'Gallery' ? 'selected' : ''}>Gallery</option>
+										<option ${obj.type === 'Ares' ? 'selected' : ''}>Ares</option>
+										<option ${obj.type === 'Field Day' ? 'selected' : ''}>Field Day</option>
 									</select>
 
 									<br>
 									<h4>Frontpage Slidesshow?</h4>
 									<select class="media-select" id="slide${obj.id}">
-										<option>No</option>
-										<option>Yes</option>
+										<option ${obj.frontpage === 'No' ? 'selected' : ''}>No</option>
+										<option ${obj.frontpage === 'Yes' ? 'selected' : ''}>Yes</option>
 									</select>
 									<br><br>
-									<button onclick="publishimg(${obj.id});" class="btn btn-success btn-sm"><i class="fa fa-check" aria-hidden="true"></i> Publish</button>
+									<button onclick="saveimg(${obj.id});" id="saveimg${obj.id}" class="btn btn-action btn-sm"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
 									<button onclick="deleteimg(${obj.id});" class="btn btn-danger btn-sm" ><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
 									</div>
 							</div>`
+							
 						} else if(data[i].filetype == 'video') {
 							document.getElementById('mediabox').innerHTML += `<div class="media-box-div" id="${obj.id}">
 								<div>
@@ -132,38 +126,38 @@
 								</div>
 								<div>
 									<h4>Short Description</h4>
-									<input type="text" id="short${obj.id}" class="media-select">		
+									<input type="text" id="short${obj.id}" value="${obj.shortinfo}" class="media-select">		
 
 									<h4>Full Description</h4>
-									<textarea class="media-text" id="long${obj.id}" cols="30" rows="10"></textarea>
+									<textarea class="media-text" id="long${obj.id}" cols="30" rows="10">${obj.shortinfo}</textarea>
 									<br>
 									<h4>Category</h4>
 									<select class="media-select" id="cat${obj.id}">
-										<option>Gallery</option>
-										<option>Ares</option>
-										<option>Field Day</option>
+										<option ${obj.type === 'Gallery' ? 'selected' : ''}>Gallery</option>
+										<option ${obj.type === 'Ares' ? 'selected' : ''}>Ares</option>
+										<option ${obj.type === 'Field Day' ? 'selected' : ''}>Field Day</option>
 									</select>
 
 									<br>
 									<h4>Frontpage Slidesshow?</h4>
 									<select class="media-select" id="slide${obj.id}">
-										<option>No</option>
-										<option>Yes</option>
+										<option ${obj.frontpage === 'No' ? 'selected' : ''}>No</option>
+										<option ${obj.frontpage === 'Yes' ? 'selected' : ''}>Yes</option>
 									</select>
 									<br><br>
-									<button onclick="publishimg(${obj.id});" class="btn btn-success btn-sm"><i class="fa fa-check" aria-hidden="true"></i> Publish</button>
+									<button onclick="saveimg(${obj.id});" id="saveimg${obj.id}" class="btn btn-action btn-sm"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
 									<button onclick="deleteimg(${obj.id});" class="btn btn-danger btn-sm" ><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
 
 									</div>
 							</div>`
-						}
+						}	
 			}
            
 	   });
 
 		
 
-	   function publishimg(id) {
+	   function saveimg(id) {
 			let sqldata = {
 				info: document.getElementById(`long${id}`).value,
 				shortinfo: document.getElementById(`short${id}`).value,
@@ -179,17 +173,21 @@
 			})
 			.then(response => response.text())
 			.then(data => {
+				console.log(data)
 				if(data == 'Updated') {
-					document.getElementById(id).style.display = "none"
+					document.getElementById(`saveimg${id}`).classList.remove('btn-action')
+					document.getElementById(`saveimg${id}`).classList.add('btn-success')
 				} else {
-					alert('Error: Failed to Delete!')
+					alert('Error: Failed to save!')
 				}
 			});
 
 	   }
 
+
 	   function deleteimg(id) {
-			fetch(`/uploadmedia?id=${id}`,{
+			if (window.confirm('Are you sure you want to delete this item?')) {
+				fetch(`/uploadmedia?id=${id}`,{
 				method: 'DELETE',
 				headers: myHeaders
 			})
@@ -201,12 +199,13 @@
 					alert('Error: Failed to Delete!')
 				}
 			});
+			} else {
+			// User clicked "Cancel" or closed the dialog
+			// Cancel the delete operation or take appropriate action
+			}
 	   }
-
-
     	</script>
 
-		
 		
 
 

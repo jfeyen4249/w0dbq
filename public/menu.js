@@ -79,7 +79,8 @@ function memberMenu() {
     <ul class="dropdown-menu">
         <li><a href="#" class="members">Hello <span class="member">${sessionStorage.getItem('username')}<span></a></li>
         <li><a href="/admin">Administration</a></li>
-        <li><a href="#">Members List</a></li>
+        <li><a href="/upload">Upload Photos & Videos</a></li>
+        <li><a href="/managephotos">Manage Photos</a></li>
     </ul>
 </li>
 <li><a href="#">Contact</a></li>

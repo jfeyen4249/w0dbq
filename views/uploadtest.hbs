@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <style>
+        #file {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .box-textbox {
+            width: 300px;
+            height: 25px;
+            border-radius: 5px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .box-labels {
+            font-size: 18px;
+        }
+
+        #customers {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        #customers td,
+        #customers th {
+            border: 2px solid #000;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+            #customers tr {
+            background-color: #fff;
+            overflow-y: scroll;
+        }
+
+        #customers tr:hover {
+            background-color: rgb(46, 114, 61);
+            cursor: pointer;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #c24b13;
+            color: white;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .dup {
+            background-color: red;
+            color: white;
+        }
+
+        #edit-box {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: #000; /* Fallback color */
+            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+        }
+        .box-header {
+            
+            text-align: center;
+        }
+
+        .window-box {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 375px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .btn-save {
+            width: 150px;
+            height: 40px;
+            margin-left: 20px;
+            border: 2px solid rgb(49, 77, 22);
+            background-color: white;
+            font-size: 24px;
+            border-radius: 15px;
+            transition: background-color 0.7s;
+        }
+
+        .btn-save:hover {
+            width: 150px;
+            height: 40px;
+            margin-left: 20px;
+            border: 2px solid rgb(49, 77, 22);
+            background-color:  rgb(49, 77, 22);
+            color: white;
+            font-size: 24px;
+            border-radius: 15px;
+            transition: background-color 0.7s;
+        }
+
+        .btn-close {
+            width: 150px;
+            height: 40px;
+            margin-left: 20px;
+            border: 2px solid rgb(204, 57, 20);
+            background-color: white;
+            font-size: 24px;
+            border-radius: 15px;
+            transition: background-color 0.7s;
+        }
+
+        .btn-close:hover {
+            width: 150px;
+            height: 40px;
+            margin-left: 20px;
+            border: 2px solid rgb(204, 57, 20);
+            background-color:  rgb(204, 57, 20);
+            color: white;
+            font-size: 24px;
+            border-radius: 15px;
+            transition: background-color 0.7s;
+        }
+
+
+
+
+
+
+    </style>
+
+    <center><input type="file" name="file" id="file"></center>
+
+    <div class="main-box">
+        <div class="datatable">
+            <div class="col-4 offset-md-1 content-box">
+                <div class="box">
+                <table id="customers"> 
+                    <thead class="thead-dark">
+                    <th>Callsign</th>
+                    <th>Name</th>
+                    <th>Band</th>
+                    <th>Mode</th>
+                    <th>Lat</th>
+                    <th>Lon</th>
+                    <th>Section</th>
+                    <th>Class</th>
+                    <th>Operator</th>
+                    </thead>
+                    <tbody class="bg-white"></tbody>
+                </table>
+            </div>
+        
+            </div>
+        </div>
+
+        <div id="edit-box">
+            <div class="window-box">
+              <header class="box-header"> 
+                <h2>Contact Editor</h2>
+              </header>
+              <div class="main-box">
+                <label class="box-labels">Callsign: </label><br><input class="box-textbox" id="formCallsign">
+                <br><br>
+                <label class="box-labels">    Name: </label><br><input class="box-textbox" id="formname">
+                <br><br>
+                <label class="box-labels">    Band: </label><br><input class="box-textbox" id="formband">
+                <br><br>
+                <label class="box-labels">    Mode: </label><br><input class="box-textbox" id="formmode">
+                <br><br>
+                <label class="box-labels"> Section: </label><br><input class="box-textbox" id="formsection">
+                <br><br>
+                <label class="box-labels">   Class: </label><br><input class="box-textbox" id="formcallclass">
+                <br><br>
+                <label class="box-labels">Operator: </label><br><input class="box-textbox" id="formoperator">
+                <br><br>
+              </div>
+              <footer class="box-header">
+                <button class="btn-save">Save</button>
+                <button class="btn-close" onclick="closebox()">Cancel</button>
+                <p style="display: none;" id="tableRow"></p>
+              </footer>
+            </div>
+          </div>
+        </div>
+
+<script>
+
+var callsign = '';
+var band = '';
+var mode = '';
+var section = '';
+var operator = '';
+var callclass = '';
+
+document.getElementById('file').onchange = function(){
+
+var file = this.files[0];
+
+var reader = new FileReader();
+reader.onload = function(progressEvent){
+  // Entire file
+  //console.log(this.result);
+
+  // By lines
+  var lines = this.result.split('\n');
+  for(var line = 0; line < lines.length; line++){
+    var test_str = lines[line];
+    var n = test_str.startsWith("<Call:");
+    var m = test_str.startsWith("<Band:");
+    var o = test_str.startsWith("<Mode:");
+    var p = test_str.startsWith("<ARRL_Sect:");
+    var Q = test_str.startsWith("<eor>");
+    var R = test_str.startsWith("<Class:"); 
+    var S = test_str.startsWith("<OPERATOR:");
+
+    if(n === true) {
+        callsign = test_str.substring(8,line.length);
+        
+    }
+
+    if(m === true) {
+        band = test_str.substring(8,line.length);
+        
+    }
+
+    if(o === true) {
+        mode = test_str.substring(8,line.length);
+        
+    }
+
+    if(p === true) {
+        section = test_str.substring(13,line.length);
+        
+    }
+
+    if(S === true) {
+        operator = test_str.substring(12,line.length);
+        
+    }
+
+    if(R === true) {
+        var callclass = test_str.substring(9,line.length);
+    }
+
+    if(Q === true) {
+        let table = document.querySelector('table');
+        fetch(`/logs`)
+        .then(response => response.json())
+        .then(data => {
+
+            let status = data.status;
+
+                if(status === 'Duplicate Contact') {
+                let newlog = `<tr onclick="myFunction(this)" >
+                        <td class="dup">${data.callsign}</td>
+                        <td class="dup">${data.name}</td>
+                        <td class="dup">${data.band}</td>
+                        <td class="dup">${data.mode}</td>
+                        <td class="dup">${data.lat}</td>
+                        <td class="dup">${data.lon}</td>
+                        <td class="dup">${data.section}</td>
+                        <td class="dup">${data.class}</td>
+                        <td class="dup">${data.operator}</td>
+                    </tr>`;
+                table.innerHTML += newlog;
+               } else {
+                let newlog = `<tr onclick="myFunction(this)" >
+                        <td class="">${data.callsign}</td>
+                        <td class="">${data.name}</td> 
+                        <td class="">${data.band}</td>
+                        <td class="">${data.mode}</td>
+                        <td class="">${data.lat}</td>
+                        <td class="">${data.lon}</td>
+                        <td class="">${data.section}</td>
+                        <td class="">${data.class}</td>
+                        <td class="">${data.operator}</td>
+                    </tr>`;
+                table.innerHTML += newlog;
+               }
+
+                callsign = '';
+                band = '';
+                mode = '';
+                section = '';
+                operator = '';
+                callclass = '';
+        });
+    }
+  }
+};
+reader.readAsText(file);
+};
+    function myFunction(x) {
+    document.getElementById('edit-box').style.display='block'
+    const table = document.getElementById('customers');
+    
+    document.getElementById("tableRow").innerHTML = x.rowIndex;
+    document.getElementById("formCallsign").value = table.rows[x.rowIndex].cells[0].innerHTML;
+    document.getElementById("formname").value = table.rows[x.rowIndex].cells[1].innerHTML;
+    document.getElementById("formband").value = table.rows[x.rowIndex].cells[2].innerHTML;
+    document.getElementById("formmode").value = table.rows[x.rowIndex].cells[3].innerHTML;;
+    document.getElementById("formsection").value = table.rows[x.rowIndex].cells[6].innerHTML;
+    document.getElementById("formcallclass").value = table.rows[x.rowIndex].cells[7].innerHTML;
+    document.getElementById("formoperator").value = table.rows[x.rowIndex].cells[8].innerHTML;
+  };
+
+  function closebox() {
+    document.getElementById('edit-box').style.display='none'
+  }
+
+    </script>
+</body>
+</html>

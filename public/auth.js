@@ -23,3 +23,15 @@ function admin() {
     }
 });
 }
+
+function mediaauth() {
+    fetch('/mediaauth', {headers: myHeaders})
+    .then(response => response.text())
+    .then(data => {
+        console.log(data)
+    if(data == 'No') {
+        alert("Your account is not authorized to manage or upload media!!")
+        window.location.href = "/"
+    }
+});
+}

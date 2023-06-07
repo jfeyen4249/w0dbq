@@ -10,9 +10,18 @@ const { compareObjs, collectFromHash } = require('fullcalendar');
 dotenv.config({ path: './.env'});
 const fs = require('fs');
 const port = 80;
+const multer = require('multer');
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/img/'); // Destination folder where files will be stored
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // File name will be unique
+  }
+});
 
-
+const upload = multer({ storage: storage });
 
 var connection = mysql.createConnection({
     host     : process.env.db_host,
@@ -144,6 +153,26 @@ app.get('/adminauth', (req, res) => {
       connection.query(`SELECT admin FROM users WHERE callsign = '${user.callsign}'`, function (error, results, fields) {
         if (error) throw error;
         res.send(results[0].admin);
+  
+      });
+    }
+    catch (exception_var) {
+      console.log("Error" + exception_var);
+    }
+  })
+})
+
+app.get('/mediaauth', (req, res) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader &&  authHeader.split(' ')[1]
+  if(token == null) return res.sendStatus(401);
+  jwt.verify(token, process.env.jwt_secret, (err, user) => {
+    if(err) return res.sendStatus(403)
+    req.user = user
+    try {
+      connection.query(`SELECT photos FROM users WHERE callsign = '${user.callsign}'`, function (error, results, fields) {
+        if (error) throw error;
+        res.send(results[0].photos);
   
       });
     }
@@ -288,7 +317,13 @@ app.get('/photos', (req, res) => {
   res.render('photos')
 })
 
+app.get('/upload', (req, res) => {
+  res.render('upload')
+})
 
+app.get('/managephotos', (req, res) => {
+  res.render('managephotos')
+})
 
 
 app.get('/test', (req, res) => {
@@ -763,6 +798,130 @@ app.get('/qrzLookUp', (req, res) => {
     console.log("Error");
   }
  })
+
+//  app.post('/uploadmedia', upload.array('files'), (req, res) => {
+//   // Access the uploaded files via req.files array
+//   function mediatype(mime) {
+//     if(mime == "jpeg"){
+//       return "image"
+//     } else if(mime == "mp4") {
+//       return "video"
+//     }
+//   }
+  
+//   for(let i=0; i < req.files.length; i++){
+//     let filetype = req.files[i].mimetype.split('/')
+    
+//     try {
+//       let sqldata = {
+//         url: `/img/${req.files[i].filename}`,
+//         active: 'New',
+//         frontpage: 'No',
+//         filetype: mediatype(filetype[1])
+//       }
+//       connection.query(`INSERT INTO images SET ?`, sqldata, function (error, results, fields) {
+//         if (error) throw error;
+
+//       });
+//     }
+//     catch (exception_var) {
+//       console.log("Error");
+//     }
+//   }
+//   res.status(200).send('Files uploaded successfully');
+// });
+
+app.post('/uploadmedia', upload.array('files'), (req, res) => {
+  function mediatype(mime) {
+    if (mime == "jpeg") {
+      return "image";
+    } else if (mime == "mp4") {
+      return "video";
+    }
+  }
+
+  const promises = req.files.map((file) => {
+    return new Promise((resolve, reject) => {
+      const filetype = file.mimetype.split('/');
+      const sqldata = {
+        url: `/img/${file.filename}`,
+        active: 'New',
+        frontpage: 'No',
+        filetype: mediatype(filetype[1])
+      };
+      connection.query(`INSERT INTO images SET ?`, sqldata, function (error, results, fields) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+  });
+
+  Promise.all(promises)
+    .then(() => {
+      res.render('upload')
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('An error occurred during file upload');
+    });
+});
+
+app.get('/uploadmedia', authenticateToken, (req, res) => {
+  let type = req.query.type;
+  function mediatype(mime) {
+    if (mime == "jpeg") {
+      return "image";
+    } else if (mime == "mp4") {
+      return "video";
+    }
+  }
+
+  try {
+    connection.query(`SELECT * FROM images WHERE active = '${type}' Order by id desc`, function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+
+});
+
+app.put('/uploadmedia', authenticateToken, (req, res) => {
+  let id = req.query.id
+  console.log(req.body)
+  try {
+    connection.query(`UPDATE images SET ? Where id = '${id}'`, req.body, function (error, results, fields) {
+      if (error) throw error;
+      res.send('Updated');
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+
+});
+
+app.delete('/uploadmedia', authenticateToken, (req, res) => {
+  let id = req.query.id
+  try {
+    connection.query(`UPDATE images SET active = 'No' WHERE id= '${id}'`, function (error, results, fields) {
+      if (error) throw error;
+      res.send('Deleted');
+    });
+  }
+  catch (exception_var) {
+    console.log("Error");
+  }
+
+});
+
+
+
 
  app.get('/gallery', (req, res) => {
   let type = req.query.type;
