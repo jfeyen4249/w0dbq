@@ -137,13 +137,6 @@
 										<option ${obj.type === 'Ares' ? 'selected' : ''}>Ares</option>
 										<option ${obj.type === 'Field Day' ? 'selected' : ''}>Field Day</option>
 									</select>
-
-									<br>
-									<h4>Frontpage Slidesshow?</h4>
-									<select class="media-select" id="slide${obj.id}">
-										<option ${obj.frontpage === 'No' ? 'selected' : ''}>No</option>
-										<option ${obj.frontpage === 'Yes' ? 'selected' : ''}>Yes</option>
-									</select>
 									<br><br>
 									<button onclick="saveimg(${obj.id});" id="saveimg${obj.id}" class="btn btn-action btn-sm"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
 									<button onclick="deleteimg(${obj.id});" class="btn btn-danger btn-sm" ><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>

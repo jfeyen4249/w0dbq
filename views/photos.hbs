@@ -56,18 +56,26 @@
 		</ol>
 
 		<div class="row">
-			<div class="grid-container-photo" id="photogrid">
-				
-				
+			<div class="gallery-card-grid" id="photogrid">
+
 			</div>
 			
 		
-				<div class="galley-box-bg" id="gallery-modal" onclick="document.getElementById('gallery-modal').style.display='none'">
-					<div class="grid-container-modal">
-						<div class="grid-item-modal"><img id="gallery-pic" class="gallery-pic">	</div>
-						<div class="grid-item-modal"><p id="gallery-info" class="gallery-info"></p></div>
+			<dialog id="galleryModal" class="gallery-modal">
+				<div class="gallery-modal-main">
+					<div id="modalMedia">
+						
+					</div>
+
+					<div>
+						<p class="modal-text" id="modaltext"></p>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-danger btn-lg" onclick="closemodal()"> Close</button>
 					</div>
 				</div>
+				
+			</dialog>
 
 
 			<!-- /Sidebar -->
@@ -78,65 +86,59 @@
 
 
 	    <script>
-
-			
-
-     fetch('/gallery')
+		let modal = document.getElementById('galleryModal')
+     	fetch('/gallery')
   		.then(response => response.json())
   		.then(data => {
-		
+			console.log(data)
 			  for(let i = 0; i < data.length; i++) {
             	let obj = data[i]
-				console.log(obj.url)
-				document.getElementById('photogrid').innerHTML += `
-					<div class="grid-item-photo" id="${obj.id}" onclick="loadimg(${obj.id});">
-						<img class="photo-thumb" src="${obj.url}">
+				if(obj.filetype == 'image') {
+					document.getElementById('photogrid').innerHTML += `
+					<div class="card gallery-card" onclick="loadimg(${obj.id});">
+						<img src="${obj.url}" class="gallery-img">
+						<p class="gallery-text">${obj.shortinfo}</p>
 					</div>
-				`
-         }  
+						`
+				}else if(obj.filetype == 'video')
+					document.getElementById('photogrid').innerHTML += `
+						<div class="card gallery-card" onclick="loadimg(${obj.id});">
+						<video id="video" src="${obj.url}" class="gallery-img" controls>
+							Your browser does not support the video tag.
+						</video>
+						<p class="gallery-text">${obj.shortinfo}</p>
+					</div>`}  
 	   });
-
-	   function loadimg(id) {
-		console.log(id)
+		
+	    function loadimg(id) {
 		fetch(`/gallerydetails?id=${id}`)
   		.then(response => response.json())
   		.then(data => {
 			console.log(data[0])
-			{{!-- document.getElementById('photogrid').innerHTML += `
-					<div class="grid-item-photo" id="${obj.id}" onclick="loadimg(${obj.id});">
-						<img class="photo-thumb" src="${obj.url}">
-					</div>
-				` --}}
-			document.getElementById('gallery-pic').src = data[0].url
-			document.getElementById('gallery-info').innerHTML = data[0].info
-			document.getElementById('gallery-modal').style.display='block'
-	   });
+			if(data[0].filetype == 'image') {
+					document.getElementById('modalMedia').innerHTML = `
+						
+						<img src="${data[0].url}" class="modal-media">
+						
+					</div>`
+				}else if(data[0].filetype == 'video') {
+					document.getElementById('pmodalMedia').innerHTML = `
+						<video id="video" src="${data[0].url}" class="modal-media" controls>
+							Your browser does not support the video tag.
+						</video>
+					</div>`	
+				}
+				document.getElementById('modaltext').innerHTML = data[0].info
+	   		});
+			
+	   	modal.showModal();
 	   }
 
+		function closemodal() {
+			modal.close()
+		}
     </script>
-		<div class="footer2">
-			<div class="container">
-				<div class="row">
-					
-					
-
-					<div class="col-md-6 widget">
-						<div class="widget-body">
-							<p class="text-right">
-								Copyright &copy; 2022, .
-							</p>
-						</div>
-					</div>
-
-				</div> <!-- /row of widgets -->
-			</div>
-		</div>
-	</footer>	
 		
-
-
-
-
 	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>

@@ -1,62 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <link rel="shortcut icon" href="assets/images/gt_favicon.png">
-	
-	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
-	<link rel="stylesheet" href="assets/css/main.css">
-    <title>Document</title>
+  <title>Slideshow</title>
+  <style>
+    .slideshow {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .slideshow img,
+    .slideshow video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .slideshow-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1;
+    }
+    
+    .slideshow-controls button {
+      margin-right: 5px;
+    }
+    
+    .slideshow-description {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 5px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
+  <div class="slideshow"></div>
 
-    <article class="col-md-15 maincontent">
-				  
-				  
-<form action="/uploadmedia" method="POST" enctype="multipart/form-data">
-  <input type="file" name="files" multiple>
-  <input type="submit" value="Upload">
-</form>
-
-
-
-
-<div id="status">
-
-	<video width="320" height="240" id="video" controls>
-
-		Your browser does not support the video tag.
-	</video>
-
-
-
-</div>
-
-
-
-			</article>
-			<!-- /Article -->
-    
-    <script>
-		
-     fetch('/uploadmedia')
-  		.then(response => response.json())
-  		.then(data => {
-			console.log(data)
-			document.getElementById('video').src = data[1].url
-
-	   });
-
-
-
-
-
-
-    </script>
-</body>
-</html>
+  <script>
+	console.log('Fetch')
+    // Fetch the data for the slideshow
+    fetch('/slideshow')
+      .then(response => response.json())
+      .then(data => {
+		console.log(data)
+        const slideshow = document.querySelector('.slideshow');
+        const slideshowControls = document.createElement('div');
+        const slideshowDescription = document.createElement('div');
+        
+        slideshowControls.className = 'slideshow-controls';
+        slideshowDescription.className = 'slideshow-description';
+        
+        slideshow.appendChild(slideshowControls);
+        slideshow.appendChild(slideshowDescription);
+        
+        // Iterate over the data and create slideshow elements
+        data.forEach((item, index) => {
+          const slide = document.createElement('div');
+          const description = document.createElement('p');
+          
+          slide.style.display = 'none';
+          slide.appendChild(description);
+          
+          if (item.filetype === 'image') {
+            const image = document.createElement('img');
+            image.src = item.url;
+            slide.appendChild(image);
+          } else if (item.filetype === 'video') {
+            const video = document.createElement('video');
+            video.src = item.url;
+            video.controls = true;
+            slide.appendChild(video);
+          }
+          
+          slideshow.appendChild(slide);
+          
+          // Add description text
+          description.innerText = item.description;
+          
+          // Add control buttons
+          const backButton = document.createElement('button');
+          backButton.innerText = 'Back';
+          backButton.addEventListener('click', () => showSlide(index - 1));
+          
+          const playPauseButton = document.createElement('button');
+          playPauseButton.innerText = 'Pause';
+          playPauseButton.addEventListener('click', togglePlayPause);
+          
+          const forwardButton = document.createElement('button');
+          forwardButton.innerText = 'Forward';
+          forwardButton.addEventListener('click', () => showSlide(index + 1));
+          
+          slideshowControls.appendChild(backButton);
+          slideshowControls.appendChild(playPauseButton);
+          slideshowControls.appendChild(forwardButton);
+        });
+        
+        const slides = Array.from(slideshow.children).slice(1); // Exclude controls and description
+        
+        let currentSlide = 0;
+        let isPlaying = true;
+        let autoplayInterval;
+        
+        function showSlide(index) {
+          slides[currentSlide].style.display = 'none';
+          currentSlide = (index + slides.length) % slides.length;
+          slides[currentSlide].style.display = 'block';
+          slideshowDescription.innerText = slides[currentSlide].querySelector('p').innerText;
+        }
+        
+        function togglePlayPause() {
+          isPlaying = !isPlaying;
+         
