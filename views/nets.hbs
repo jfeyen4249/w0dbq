@@ -1,0 +1,447 @@
+<html lang="en">
+  <head>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38509576-8');
+</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Sergey Pozhilov (GetTemplate.com)" />
+
+    <title>W0DBQ: Net Control</title>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
+    ></script>
+    <link rel="shortcut icon" href="assets/images/gt_favicon.png" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      media="screen"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700"
+    />
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
+    <script src="/menu.js" defer></script>
+    <script src="/auth.js"></script>
+    <script>netauth()</script>
+    <!-- Custom styles for our template -->
+    <link
+      rel="stylesheet"
+      href="../assets/css/bootstrap-theme.css"
+      media="screen"
+    />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+	<script src="assets/js/html5shiv.js"></script>
+	<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top headroom">
+      <div class="container" id="nav-bar">
+        <div class="navbar-header">
+          <!-- Button for smallest screens -->
+          <button
+            type="button"
+            class="navbar-toggle"
+            data-toggle="collapse"
+            data-target=".navbar-collapse"
+          ><span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img
+              src="/assets/images/logo.png"
+              alt="w0dbq logo"
+            /></a>
+        </div>
+        <div class="navbar-collapse collapse">
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <!-- /.navbar -->
+
+    <header id="head" class="secondary"></header>
+
+    <!-- container -->
+    <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Net Control</li>
+      </ol>
+
+      <div class="row">
+        {{!-- <header class="page-header">
+          <h2 class="page-title">W0DBQ: Net Control</h2>
+
+        </header> --}}
+
+        <!-- Article main content -->
+        <article class="col-md-10 maincontent">
+
+          <div class="net-box">
+            <div class="net-layout">
+              <div class="net-title">W0DBQ Net Control</div>
+              <div>
+                <div class="net_counter">Check-in count: <span id="net_counter">0</span></div>
+                <select class="net-select" id="net">
+                  <option value="" >Select a Net</option>
+                  <option value="Ares Net" >Ares Net</option>
+                  <option value="Emergancy Respons Net">Emergancy Respons Net</option>
+                  <option value="Coffee Net" >Coffee Net</option>
+                  <option value="Club Net" >Sunday Night Club Net</option>
+                </select>
+                <button class="btn btn-success btn-sm" id="netStart" onclick="startNet()">Start</button>
+                <button class="btn btn-danger btn-sm" id="netEnd" onclick="endNet()">End</button>
+              </div>
+
+              <div class="net-call hide" id="netCallsign"><h1 id="net_name"></h1><span class="net-callsign" id="net_callsign"></span></div>
+
+              <div>
+                <div class="btn-grid hide" id="netbtns">
+
+                  <div><button class="btn btn-warning btn-sm" id="btn1">No Traffic</button></div>
+                  <div><button class="btn btn-info btn-sm" id="btn2">Traffic</button></div>
+                  <div><button class="btn btn-light btn-color" id="btn3" >Nothing Heard</button></div>
+                  <div><button class="btn btn-success btn-sm"id="btn4">Add Contact</button></div>
+                  <div><button class="btn btn-danger btn-sm" id="btn5">Round 2</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+        <!-- /Article -->
+
+        <!-- Sidebar -->
+        <aside class="col-md-2 sidebar sidebar-right size">
+
+          <center>
+          <h3>Tools</h3></center>
+          <hr>
+          <button class="btn btn-danger btn-sm" onclick="listdialog.showModal()">Download Roll Call List</button>
+          <br>
+          {{!-- <button class="btn btn-info btn-md">Log Net Results</button> --}}
+          </center>
+        </aside>
+        <!-- /Sidebar -->
+
+      </div>
+    </div>
+    
+
+    <dialog id="add">
+        <div class="net-dialog">
+            <div class="text-center text-2xl  text-white">Add Conctact to the Net</div>
+            
+            <div class="net-dialog-input">
+              <input type="text" placeholder="Callsign" value="" id="add_callsign" required>
+              <input type="text" placeholder="Name" id="add_name" required>
+            </div>
+
+           <div class="net-button-footer">
+             <button class="btn btn-success btn-sm" id="add-btn-tr">Traffic</button>
+             <button class="btn btn-success btn-sm" id="add-btn-notr">No Traffic</button>
+             <button class="btn btn-danger btn-sm" onclick="dialog.close()">Close</button>
+           </div>
+        </div>
+    </dialog>
+
+     <dialog id="dlList">
+        <div class="net-dialog">
+            <div class="text-center text-2xl  text-white">Select A Net</div>
+            
+            <div class="list-net">
+              <select class="net-select" id="list-net">
+                  <option value="" >Select a Net</option>
+                  <option value="Ares Net" >Ares Net</option>
+                  <option value="Emergancy Respons Net">Emergancy Respons Net</option>
+                  <option value="Coffee Net" >Coffee Net</option>
+                  <option value="Club Net" >Sunday Night Club Net</option>
+                </select>
+            </div>
+
+           <div class="net-button-footer">
+             <button class="btn btn-success btn-sm" id="net-dl-btn">Download List</button>
+             <button class="btn btn-danger btn-sm" onclick="listdialog.close()">Close</button>
+           </div>
+        </div>
+    </dialog>
+
+
+
+    <script defer>
+      const dialog = document.getElementById("add");
+      const listdialog = document.getElementById("dlList");
+      const listNet = document.getElementById("list-net");
+    
+     const startBTN = document.getElementById("netStart")
+     const endBTN = document.getElementById("netEnd")
+     const btn1 = document.getElementById('btn1')
+     const btn2 = document.getElementById('btn2')
+     const btn3 = document.getElementById('btn3')
+     const btn4 = document.getElementById('btn4')
+     const btn5 = document.getElementById('btn5')
+     const addBTNtr = document.getElementById('add-btn-tr')
+     const addBTNnotr = document.getElementById('add-btn-notr')
+     const dlList = document.getElementById('net-dl-btn')
+     startBTN.style.display = 'none'
+     endBTN.style.display = 'none'
+     const netCallsign = document.getElementById("netCallsign")
+     const netbtns = document.getElementById("netbtns")
+     const netSelect = document.getElementById("net")
+     let netName = document.getElementById("net_name")
+     let netCall = document.getElementById("net_callsign")
+     let net_counter = document.getElementById("net_counter")
+     let addCallsign = document.getElementById("add_callsign");
+     let addName = document.getElementById("add_name")
+
+     let netList = {}
+     let netCounter = 0
+     let netLength = 0
+     let netid = ''
+     let checkInCount = 0
+
+      function startNet() {
+      var selectElement = document.getElementById("net");
+      var selectedValue = selectElement.value;
+       if(selectedValue == "") {
+        alert('Please select a Net!!')
+        return
+       }
+        startBTN.style.display = 'none'
+        endBTN.style.display = 'inline'
+        netCallsign.classList.remove('hide')
+        netbtns.classList.remove('hide')
+        selectElement.setAttribute("disabled", "disabled");
+        
+        fetch(`/startnet`, {
+          method: 'POST',
+          body: JSON.stringify({net: netSelect.value , operator: sessionStorage.getItem('username'), entry: 'website'}),
+          headers: myHeaders})
+        .then(response => response.json())
+        .then(data => {
+            netid = data.insertId
+            console.log(netid)
+            fetch(`/netlist?net=${data.insertId}`, {headers: myHeaders})
+            .then(response => response.json())
+            .then(data1 => {
+              console.log(data1)
+              netList = data1
+              netLength = data1.length
+              netName.innerText = netList[0].name
+              netCall.innerHTML = netList[0].callsign
+            });
+        });
+
+      }
+
+      function endNet() {
+        var selectElement = document.getElementById("net");
+        startBTN.style.display = 'none'
+        endBTN.style.display = 'none'
+        selectElement.removeAttribute("disabled");
+        netbtns.classList.add('hide')
+        netName.innerText = ''
+        netCall.innerHTML = ''
+        checkInCount = 0
+        net_counter.innerText = checkInCount
+        netList = {}
+        fetch(`/endnet?net=${netid}`, {headers: myHeaders})
+            .then(response => response.json())
+            .then(data => {
+              if(data.changedRows == 1) {
+                alert('The net has ended!')
+              }
+            });
+      }
+
+    btn1.addEventListener("click", function() {
+        fetch(`/netcheckin`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: netList[netCounter].name,
+          callsign: netList[netCounter].callsign,
+          suffix: netList[netCounter].suffix,
+          net: netSelect.value,
+          net_id: netid,
+          traffic: 'false'
+        }),
+            headers: myHeaders})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            if(data.affectedRows == 1) {
+              netCounter++
+              netName.innerText = netList[netCounter].name
+              netCall.innerHTML = netList[netCounter].callsign
+              checkInCount++
+              net_counter.innerText = checkInCount
+            }
+          });
+    })
+
+    btn2.addEventListener("click", function() {
+      
+     fetch(`/netcheckin`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: netList[netCounter].name,
+          callsign: netList[netCounter].callsign,
+          suffix: netList[netCounter].suffix,
+          net: netSelect.value,
+          net_id: netid,
+          traffic: 'true'
+        }),
+            headers: myHeaders})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            if(data.affectedRows == 1) {
+              netCounter++
+              checkInCount++
+              netName.innerText = netList[netCounter].name
+              netCall.innerHTML = netList[netCounter].callsign
+              net_counter.innerText = checkInCount
+            }
+          });
+    })
+
+    btn3.addEventListener("click", function() {
+      console.log(`Len: ${netLength} | Counter: ${netCounter}`)
+        netCounter++
+        netName.innerText = netList[netCounter].name
+        netCall.innerHTML = netList[netCounter].callsign
+        console.log(`Len: ${netLength} | Counter: ${netCounter}`)
+    })
+
+    btn4.addEventListener("click", function() {
+        dialog.showModal();
+    })
+
+    btn5.addEventListener("click", function() {
+       if(btn5.innerHTML == 'Round 2') {
+        fetch(`/netcheckin?net=${netid}`, {headers: myHeaders})
+          .then(response => response.json())
+          .then(data => {
+            netList = data
+            netCounter = 0
+            netLength = data.length
+            btn5.innerHTML = 'Next'
+            console.log(netList)
+            console.log(netCounter)
+            netName.innerText = netList[netCounter].name
+            netCall.innerHTML = netList[netCounter].callsign
+            btn1.style.display = 'none'
+            btn2.style.display = 'none'
+            btn3.style.display = 'none'
+        });
+       } else {
+        netCounter++
+        netName.innerText = netList[netCounter].name
+        netCall.innerHTML = netList[netCounter].callsign
+        console.log(`Len: ${netLength} | Counter: ${netCounter}`)
+        if(netCounter == netLength) {
+          btn5.style.display = 'none'
+        }
+       }
+
+    })
+
+    addBTNtr.addEventListener("click", function() {
+        fetch(`/netcheckin`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: addName.value,
+          callsign: addCallsign.value,
+          suffix: getsuffix(),
+          net: netSelect.value,
+          net_id: netid,
+          traffic: 'true'
+        }),
+            headers: myHeaders})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            if(data.affectedRows == 1) {
+              checkInCount++
+              net_counter.innerText = checkInCount
+              dialog.close()
+            }
+          });
+    })
+
+    addBTNnotr.addEventListener("click", function() {
+        fetch(`/netcheckin`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: addName,
+          callsign: addCallsign,
+          suffix: getsuffix(),
+          net: netSelect.value,
+          net_id: netid,
+          traffic: 'true'
+        }),
+            headers: myHeaders})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            if(data.affectedRows == 1) {
+              checkInCount++
+              net_counter.innerText = checkInCount
+              dialog.close()
+            }
+          });
+    })
+
+    dlList.addEventListener("click", function() {
+        {{!-- alert(listNet.value) --}}
+        window.location.href = `/pdf?net=${listNet.value}`
+        listdialog.close()
+    })
+    
+    netSelect.addEventListener("change", function() {
+      if(netSelect.value !== "") {
+        startBTN.style.display = 'inline'
+        console.log(netSelect.value)
+      } else {
+        startBTN.style.display = 'none'
+      }
+    })
+
+    let getsuffix = () => {
+        const suffix = addCallsign.value.replace(/^\D+/, '').substring(1);
+        return suffix;
+    }
+    
+    </script>
+
+    <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+    <script
+      src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+    ></script>
+    <script
+      src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+    ></script>
+    <script src="assets/js/headroom.min.js"></script>
+    <script src="assets/js/jQuery.headroom.min.js"></script>
+    <script src="assets/js/template.js"></script>
+  </body>
+</html>

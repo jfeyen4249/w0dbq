@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38509576-8');
+</script>
 	<meta charset="utf-8">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
-	<title>W0DBQ: Calendar</title>
+	<title>W0DBQ: Administration</title>
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
@@ -16,9 +23,6 @@
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 	<script src="/auth.js"></script>
-	<script>
-		admin()
-	</script>
 	<script src="/menu.js" defer></script>
 	<!-- Custom styles for our template -->
 	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css" media="screen" >
@@ -49,22 +53,21 @@
 	<div class="container">
 
 		<ol class="breadcrumb">
-			<li><a href="index.html">Home</a></li>
-			<li class="active">Member Homepage</li>
+			<li><a href="/">Home</a></li>
+			<li class="active">Administrtion</li>
 		</ol>
 
 		<div class="row">
 			
-			<div class="tab">
-  <button class="tablinks active" onclick="openCity(event, 'calendaradmin')">Calendar Admin</button>
-  <button class="tablinks" onclick="openCity(event, 'lunch')">Lunch Bunch Admin</button>
-  <button class="tablinks" onclick="openCity(event, 'bod')">BOD Admin</button>
-  <button class="tablinks" onclick="openCity(event, 'users')">User Managment</button>
-  <button class="tablinks" onclick="openCity(event, 'ares')">ARES Page</button>
-  <button class="tablinks" onclick="openCity(event, 'testing')">Testing</button>
+<div class="tab">
+	{{{calendar}}}
+	{{{bod}}}
+	{{{users}}}
+	{{{lunch}}}
+	{{{testing}}}
 </div>
 
-<div id="calendaradmin" class="tabcontent" style="display: block;">
+<div id="calendaradmin" class="tabcontent" >
   <h3>Calendar Managment</h3>
   <p></p>
 </div>
@@ -193,22 +196,26 @@
   <div class="container mt-4">
       <table class="table table-striped">
         <thead>
-          <tr>
+          <tr style="text-align: center;">
             <th>Callsign</th>
             <th>Name</th>
 			<th>Account Status</th>
-            <th>Administrator</th>
-            <th>BOD Admin</th>
-            <th>Testing  Admin</th>
-            <th>Photos Admin</th>
-            <th>Ares Admin</th>
-            <th>Repeater Admin</th>
-            <th>Calendar  Admin</th>
-            <th>User Admin</th>
+            <th>Admin</th>
+            <th>BOD</th>
+            <th>Testing</th>
+            <th>Photos</th>
+            <th>Page Editor</th>
+            <th>Repeater</th>
+            <th>Calendar Manager</th>
+            <th>User Managment</th>
             <th>Lunch Bunch</th>
+			<th>Marketplace</th>
+			<th>Net Control</th>
+
+
           </tr>
         </thead>
-        <tbody id="user-table">
+        <tbody id="user-table" style="text-align: center;">
         
         </tbody>
       </table>
@@ -216,17 +223,40 @@
 </div>
 
 <div id="ares" class="tabcontent">
-  <h3>Ares</h3>
-  <div id="editor">
-  <p>Hello World!</p>
-  <p>Some initial <strong>bold</strong> text</p>
-  <p><br></p>
-</div>
+  
 </div>
 
 <div id="testing" class="tabcontent">
   <h3>Testing</h3>
-  <p></p>
+  <div class="testing-main">
+	<div class="testing-left" id="testingDates">
+
+
+	</div>
+
+	<div class="testing-right">
+
+		<p>Testing Date</p>
+		<input type="date" id="testingdate" class="testing-inputs" ><br><br>
+
+		<p>Location</p>
+		<select id="dropdown" class="testing-inputs" onchange="checkInput(this)">
+			<option value="">Select a Location</option>
+		</select>
+		
+		<input type="text"  class="testing-inputs hidden" id="otherInput" placeholder="Name of new Location"/>
+		
+		<p>Address</p>
+		<input type="text" name="" class="testing-inputs" id="testingAddress">
+
+		<p>Details</p>
+		<input type="text" name="" class="testing-inputs" id="testinginfo">
+
+		<br><br>
+		<button type="button" class="btn btn-success btn-lg" onclick="addtestdates()">Add to the Calendar</button>
+	</div>
+
+  </div>
 </div>
 
 
@@ -238,14 +268,22 @@
 
 <script defer>
 
-  var quill = new Quill('#editor', {
-    theme: 'snow'
-  });
-	LoadBOD()
-	loadlbcal()
-	loaddateloc()
-	loadLOC()
-	getusers()
+	
+
+	function checkInput(selectElement) {
+		var otherInput = document.getElementById("otherInput");
+		if (selectElement.value === "other") {
+			otherInput.value = ''
+			otherInput.classList.remove('hidden')
+		} else {
+			otherInput.classList.add('hidden')
+			otherInput.value = selectElement.value
+			gettestaddress()
+		}
+	}
+	
+
+    let aresMainData = ``
 	let selectID = ''
 	let BODname = ''
 	let BODcallsign = ''
@@ -261,6 +299,15 @@
 	const lbsave = document.getElementById('lbsave')
 	const lbleft = document.getElementById('lbleft')
 	const datesSelectList = document.querySelectorAll('.lbcallist')
+	let ares_save = document.getElementById('ares_save')
+	LoadBOD()
+	loadlbcal()
+	loaddateloc()
+	loadLOC()
+	getusers()
+	gettestdates()
+	gettestlocations()
+	
 
 // ****************************************************************************************************************************************
 // ****                                                 Lunch Bunch Tab                                                                ****
@@ -399,7 +446,6 @@ function loaddateloc() {
 		});
 }
 
-
 function updatelbcal(id) {
 	let lbupdatecaldata = {id:id, location: document.getElementById('lbcalloc' + id).value}
 	fetch(`/lbupdatecalloc`, {
@@ -408,7 +454,7 @@ function updatelbcal(id) {
         headers: myHeaders})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
+			
 				if(data.changedRows == 1) {
 					loadlbcal()
 					loaddateloc()
@@ -417,17 +463,6 @@ function updatelbcal(id) {
 			});
 }
 
-
-
-
-
-
-
-
-
-
-
-	
 
 // ****************************************************************************************************************************************
 // ****                                                  BOD Admin Tab                                                                 ****
@@ -559,7 +594,7 @@ function updatelbcal(id) {
 			callsign: document.getElementById('bodcallsigntext').value,
 			image: `/img/bod/${BODimage}`
 		}
-		console.log(BODinfo)
+
 
 		fetch(`/bodmembers?id=${id}`, {
         method: 'POST',
@@ -596,8 +631,7 @@ function updatelbcal(id) {
 				document.getElementById(`bodimg1`).src = '/img/bod/img.png'
 			}else{
 				document.getElementById(`bodimg1`).src = data[0].image
-				{{!-- console.log('BOD Image:' + BODimage)
-				console.log(data[0].image.replace('/img/bod/', '')) --}}
+				
 			}
 			document.getElementById(`bodname1`).innerHTML = data[0].name
 			document.getElementById(`bodtitle1`).innerHTML = data[0].position
@@ -680,7 +714,7 @@ function updatelbcal(id) {
     async function bodupload(){
 
       const photoFile = document.getElementById('uploader').files[0];
-	  console.log(photoFile)
+
       const photoData = await readPhotoFile(photoFile);
 
       const response = await fetch('/bodupload', {
@@ -736,18 +770,20 @@ function getusers() {
 					<td><input onclick="(updateuserrights(${obj.id}, 'bod'))" type="checkbox" ${rightcheck(obj.bod)} ></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'testing'))" type="checkbox" ${rightcheck(obj.testing)}></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'photos'))" type="checkbox" ${rightcheck(obj.photos)}></td>
-					<td><input onclick="(updateuserrights(${obj.id}, 'ares'))" type="checkbox" ${rightcheck(obj.ares)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'edit'))" type="checkbox" ${rightcheck(obj.edit)}></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'repeater'))" type="checkbox" ${rightcheck(obj.repeater)}></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'calendar'))" type="checkbox" ${rightcheck(obj.calendar)}></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'users'))" type="checkbox" ${rightcheck(obj.users)}></td>
 					<td><input onclick="(updateuserrights(${obj.id}, 'lunch'))" type="checkbox" ${rightcheck(obj.lunch)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'market'))" type="checkbox" ${rightcheck(obj.market)}></td>
+					<td><input onclick="(updateuserrights(${obj.id}, 'net_control'))" type="checkbox" ${rightcheck(obj.net_control)}></td>
 				`
 				}
 			});
 }
 
 function rightcheck(status) {
-	if(status == "Yes") {
+	if(status == "true") {
 		return "checked"
 	}
 	else if(status == "Active") {
@@ -768,17 +804,143 @@ function updateuserstatus(id) {
 }
 
 function updateuserrights(id, right) {
-
-
-
 	fetch(`/userright`, {
         method: 'POST',
 		body: JSON.stringify({userid: id, userright: right}),
         headers: myHeaders})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
+
 			});
+}
+
+function gettestdates() {
+	document.getElementById('testingDates').innerHTML = ''
+	fetch(`/testlist`, {
+        method: 'GET',
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('testingDates').innerHTML += `
+					<div class="testing-box">
+						<div>
+							<p class="testing-text">${obj.start}</p>
+						</div>
+
+						<div>
+							<p class="testing-text">${obj.location} <br> ${obj.Address}</p>
+						</div>
+
+						<div>
+							<button class="btn btn-danger btn-sm" onclick="deltestdates(${obj.id})">Delete</button>
+						</div>
+					</div>
+				`
+				}
+			});
+}
+
+function deltestdates(id) {
+	fetch(`/testlist?id=${id}`, {
+        method: 'DELETE',
+        headers: myHeaders})
+			.then(response => response.text())
+			.then(data => {
+				
+				if(data == 'Deleted') {
+					//document.getElementById('testingDates').innerHTML = ''
+					gettestdates()
+				} else {
+					alert('Error deleting this testing date!')
+				}
+
+			});
+}
+
+function addtestdates() {
+	if(document.getElementById('testingdate').value == '') {
+		alert('Select a date')
+		return
+	}
+
+	if(document.getElementById('otherInput').value == '') {
+		alert('Select a location')
+		return
+	}
+
+	if(document.getElementById('testingAddress').value == '') {
+		alert('Enter an address')
+		return
+	}
+
+	if(document.getElementById("dropdown").value == 'other') {
+		settestlocations()
+	}
+
+	fetch(`/testlist`, {
+        method: 'POST',
+		body: JSON.stringify({
+			date: document.getElementById('testingdate').value,
+    		info: document.getElementById('testinginfo').value,
+    		location: document.getElementById('otherInput').value,
+    		address: document.getElementById('testingAddress').value,
+			}),
+        headers: myHeaders})
+			.then(response => response.text())
+			.then(data => {
+				if(data == "Added") {
+					gettestdates()
+					document.getElementById('testingdate').value = ''
+    				document.getElementById('testinginfo').value = ''
+    				document.getElementById('otherInput').value = ''
+    				document.getElementById('testingAddress').value = ''
+
+				} else {
+					alert('Error entering data on calendar!')
+				}
+				
+			});
+}
+
+function gettestlocations() {
+	fetch(`/testlocations`, )
+			//document.getElementById('dropdown').innerHTML += `<option value="">Select a Location</option>`
+			.then(response => response.json())
+			.then(data => {
+
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('dropdown').innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+				}
+				document.getElementById('dropdown').innerHTML += '<option value="other">New Location</option>'
+			});
+}
+
+function settestlocations() {
+	fetch(`/testlocations`, {
+        method: 'POST',
+		body: JSON.stringify({name: document.getElementById('otherInput').value, address: document.getElementById('testingAddress').value}),
+        headers: myHeaders})
+			.then(response => response.json())
+			.then(data => {
+				document.getElementById('dropdown').innerHTML = ``
+				document.getElementById('dropdown').innerHTML += `<option value="">Select a Location</option>`
+				gettestlocations()
+				document.getElementById('dropdown').classList.add('otherInput')
+			});
+}
+
+function gettestaddress() {
+
+	let name = document.getElementById("dropdown").value
+	fetch(`/testlocations?name=${name}`, )
+			.then(response => response.json())
+			.then(data => {
+				document.getElementById('testingAddress').value = data[0].address
+				
+			})
 }
 
 
@@ -786,17 +948,9 @@ function updateuserrights(id, right) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+// ****************************************************************************************************************************************
+// ****                                             Calendar Admin Tab                                                                 ****
+// ****************************************************************************************************************************************
 
 
 
@@ -826,20 +980,7 @@ function updateuserrights(id, right) {
 
       
     </script>
-		<div class="footer2">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 widget">
-						<div class="widget-body">
-							<p class="text-right">
-								Copyright &copy; 2022, .
-							</p>
-						</div>
-					</div>
-
-				</div> <!-- /row of widgets -->
-			</div>
-		</div>
+		
 	</footer>	
 		
 

@@ -11,12 +11,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
-	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
-	<title>W0DBQ: Sign in</title>
+	<title>W0DBQ: Set New Password</title>
 
 	<link rel="shortcut icon" href="assets/images/gt_favicon.png">
-	
+
 	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -59,7 +58,7 @@
 
 		<ol class="breadcrumb">
 			<li><a href="index.html">Home</a></li>
-			<li class="active">Login</li>
+			<li class="active">Password Reset</li>
 		</ol>
 
 		<div class="row">
@@ -67,33 +66,33 @@
 			<!-- Article main content -->
 			<article class="col-xs-12 maincontent">
 				<header class="page-header">
-					<h1 class="page-title">Sign in</h1>
+					<center><h1 class="page-title">Password Reset</h1></center>
 				</header>
 				
 				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<h3 class="thin text-center">Sign in to your account</h3>
-							<p class="text-center text-muted">Login to your GRARC account. If you are a club member and do not have an account click <a href="/signup">Register</a> to signup for your account. </p>
+							<h3 class="thin text-center">Reset your password</h3>
+							<p class="text-center text-muted" id="auth" hidden>{{auth}}</p>
 							<hr>
 							
 								<div class="top-margin">
-									<label>Callsign <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" id="callsign">
+									<label>New Password <span class="text-danger">*</span></label>
+									<input type="password" class="form-control" id="password1">
 								</div>
 								<div class="top-margin">
-									<label>Password <span class="text-danger">*</span></label>
-									<input type="password" class="form-control" id="password">
+									<label>Confirm Password <span class="text-danger">*</span></label>
+									<input type="password" class="form-control" id="password2">
 								</div>
 
 								<hr>
 
 								<div class="row">
 									<div class="col-lg-8">
-										<b><a href="#" onclick="resetpassword()">Forgot password?</a></b>
+										<b><a href=""></a></b>
 									</div>
 									<div class="col-lg-4 text-right">
-										<button class="btn btn-action" id="loginbtn" onclick=" login()">Sign in</button>
+										<button class="btn btn-danger" id="loginbtn" onclick="reset()">Reset</button>
 									</div>
 								</div>
 							
@@ -115,67 +114,55 @@
 	</footer>	
 		
 	<script>
-		window.addEventListener('keypress', function(event) {
+		 window.addEventListener('keypress', function(event) {
 			if (event.keyCode === 13) {
 				login()
 			}
 		});
 
 
-	async function login() {
+	async function reset() {
 		
     // const formData = new FormData();
     // formData.append("Content-Type", "application/json")
-    const callsign = document.getElementById('callsign').value;
-    const password = document.getElementById('password').value;
-    let data = JSON.stringify({callsign: callsign, password: password})
+    const password1 = document.getElementById('password1').value;
+    const password2 = document.getElementById('password2').value;
+	const auth = document.getElementById('auth').innerText;
+    let data = JSON.stringify({auth: auth, password: password2})
 
-    if(callsign == '') {
+    if(password1 == '') {
         alert('Please enter a username')
         return
     }  
 
-    if(password == '') {
+    if(password2 == '') {
         alert('Please enter a password');
         return
     }  
 
-    fetch("/login", {
-        method: 'POST',
+	if(password1 !== password2) {
+        alert('Password do not match!');
+        return
+    }  
+
+
+
+    fetch("/reset", {
+        method: 'PUT',
         body: data,
         headers: {'Content-Type': 'application/json;charset=utf-8'}
     })
-    .then(response => response.json())
+    .then(response => response.text())
     .then(data => {
 		console.log(data)
-        if(data.status == "pass"){
-            sessionStorage.setItem('username', data.callsign);
-            sessionStorage.setItem('token', data.token);
-            window.location.href = "/";
-        } else {
-			
-            alert(data.status);
-        }
+		if(data == 'reset') {
+			alert('Password has been reset!')
+			window.location.href = '/login'
+		}
+       
      });
 }
 	document.getElementById('callsign').focus()
-
-	function resetpassword() {
-		const callsign = document.getElementById('callsign').value;
-		if(callsign == '') {
-			alert('Please enter your callsign')
-			return
-		}  
-		fetch("/reset", {
-        method: 'POST',
-        body: JSON.stringify({callsign: callsign}),
-        headers: {'Content-Type': 'application/json;charset=utf-8'}
-		})
-		.then(response => response.text())
-		.then(data => {
-			alert(data)
-		});
-	}
 	</script>
 
 

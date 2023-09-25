@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38509576-8');
+</script>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+
+	
+	<title>W0DBQ: Page Editor</title>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script src="/auth.js"></script>
+	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css">
+      <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js"></script>
+	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<script src="/menu.js" defer></script>
+	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+</head>
+
+<body class="home">
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
+		<div class="container" id="nav-bar">
+			<div class="navbar-header">
+				<!-- Button for smallest screens -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+				<a class="navbar-brand" href="/"><img src="/assets/images/logo.png" alt="Progressus HTML5 template"></a>
+			</div>
+			<div class="navbar-collapse collapse">
+				
+			</div><!--/.nav-collapse -->
+		</div>
+	</div> 
+	<!-- /.navbar -->
+
+	<header id="head" class="secondary"></header>
+
+	<!-- container -->
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li class="active" id="nav_title">Page Editor</li>
+		</ol>
+
+		<div class="row" style="margin-top: 30px;">
+			<article class="col-md-12 maincontent" id="main">
+				<header class="page-header edit-header">
+					<h2 class="page-title">Website Page Editor</h2>
+					<select id="dropdown" class="edit-select" onchange="loadpage(this.value)">
+						
+					</select>	
+				</header>
+				<button class="btn btn-info btn-sm save" onclick="savehtml()"> Save </button>
+				<div id="summernote" class="summernote"></div>
+
+				<div class="edit-grid">
+					<div>
+						<div class="edit-title">
+							<div><h3>Custom JavaScript</h3></div>
+							<div><button class="btn btn-info btn-sm save" onclick="savejs()"> Save </button></div>
+						</div>
+ 				 	<textarea id="jstext" rows="20" style="width: 100%; margin-bottom: 50px;"></textarea>
+				 </div>
+
+				<div>
+					<div class="edit-title">
+							<div><h3>Custom CSS</h3></div>
+							<div><button class="btn btn-info btn-sm save" onclick="savecss()"> Save </button></div>
+						</div>
+ 				 	<textarea id="csstext" rows="20" style="width: 100%; margin-bottom: 150px;"></textarea>
+				</div>
+			</div>
+
+
+				
+
+				
+
+
+
+
+
+
+
+
+
+				<script>
+				$('#summernote').summernote({
+					placeholder: 'Hello stand alone ui',
+					tabsize: 2,
+					height: 500,
+					toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'underline', 'clear']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['table', ['table']],
+					['insert', ['link']],
+					['view', ['codeview', 'help']]
+					]
+				});
+				</script>			
+			</article>
+	
+				
+		
+			<!-- /Sidebar -->
+
+		</div>
+	</div>	<!-- /container -->
+
+	
+	<script defer>
+		fetch('/pagelist')
+			.then(response => response.json())
+			.then(data => {
+				
+				document.getElementById('dropdown').innerHTML = '<option>Select a page to Edit</option>'
+				for(let i = 0; i < data.length; i++) {
+					let obj = data[i]
+					document.getElementById('dropdown').innerHTML += `<option value="${obj.page}">${obj.nav_title}</option>`
+				}  
+			})
+		
+
+
+		function loadpage(page) {
+			fetch(`/pagedata?page=${page}`)
+  		.then(response => response.json())
+  		.then(data => {
+			console.log(data)
+            $('#summernote').summernote('code', data[0].info)
+			data: document.getElementById('jstext').value =  data[0].scripts
+			data: document.getElementById('csstext').value =  data[0].css
+		})
+		}
+
+		function savehtml() {
+		fetch(`/pagedata`, {
+			method: 'POST',
+			body: JSON.stringify({page: document.getElementById('dropdown').value, table: 'info', data: $('#summernote').summernote('code')}),
+			headers: myHeaders})
+				.then(response => response.text())
+				.then(data => {
+					if(data = 'Saved') {
+						alert('Saved')
+					}
+			});
+		}
+
+		function savejs() {
+		fetch(`/pagedata`, {
+			method: 'POST',
+			body: JSON.stringify({page: document.getElementById('dropdown').value, table: 'scripts',  data: document.getElementById('jstext').value}),
+			headers: myHeaders})
+				.then(response => response.text())
+				.then(data => {
+					if(data = 'Saved') {
+						alert('Saved')
+					}
+			});
+		}
+
+		function savecss() {
+		fetch(`/pagedata`, {
+			method: 'POST',
+			body: JSON.stringify({page: document.getElementById('dropdown').value, table: 'css',  data: document.getElementById('csstext').value}),
+			headers: myHeaders})
+				.then(response => response.text())
+				.then(data => {
+					if(data = 'Saved') {
+						alert('Saved')
+					}
+			});
+		}
+	</script>
+
+
+
+
+	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/assets/js/headroom.min.js"></script>
+	<script src="/assets/js/jQuery.headroom.min.js"></script>
+	<script src="/assets/js/template.js"></script>
+</body>
+</html>

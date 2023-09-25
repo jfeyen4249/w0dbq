@@ -1,0 +1,28 @@
+<!-- views/index.handlebars -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MySQL Data Table</title>
+</head>
+<body>
+  <h1>MySQL Data Table</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <!-- Add more columns here based on your table structure -->
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+      <tr>
+        <td>{{this.id}}</td>
+        <td>{{this.name}}</td>
+        <!-- Add more table cells here based on your table structure -->
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>
+</html>
