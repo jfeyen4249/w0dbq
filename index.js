@@ -128,8 +128,9 @@ app.get("/email", (req, res) => {
 
 app.post("/email", (req, res) => {
   const authHeader = req.headers.authorization;
-  const auth = authHeader.split(' ')[1];
-  const id = req.body.id
+   const auth = authHeader.split(' ')[1];
+   const id = req.body.id
+  console.log(authHeader)
 
   if(auth !== process.env.mail_auth) {
     res.send({status: 'Error!'})
@@ -464,6 +465,10 @@ app.get("/", (req, res) => {
 
 app.get("/nets", (req, res) => {
   res.render("nets");
+});
+
+app.get("/signin", (req, res) => {
+  res.render("signin");
 });
 
 // app.get('/rr', (req, res) => {
@@ -1653,7 +1658,7 @@ app.post("/pagedata", authenticateToken, (req, res) => {
 });
 
 // ****************************************************************************************************************************************
-// ****                                        Net Control Testing Calenar API's                                                       ****
+// ****                                                 Net Control API's                                                              ****
 // ****************************************************************************************************************************************
 
 app.get("/netlist", authenticateToken,  (req, res) => {
@@ -1791,8 +1796,155 @@ app.get('/pdf', (req, res) => {
     });
   });
 
+  // ****************************************************************************************************************************************
+// ****************************************************************************************************************************************
+// ****                                        Net Control Testing Calenar API's                                                       ****
+// ****************************************************************************************************************************************
+// ****************************************************************************************************************************************
 
+app.get("/signin-list", (req, res) => {
+  try {
+    connection.query(`SELECT * FROM signin_list WHERE status = 'Active' ORDER By suffix Asc`, req.body, function (error, results, fields1) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  } catch (exception_var) {
+    console.log("Error");
+  }
+});
 
+app.post("/signin", (req, res) => {
+    const type = req.body.type
+
+    if(type == 'member') {
+      const id = req.body.id
+      let d = new Date()
+      let logdate = d.toISOString().split('T')[0]
+      let data = {
+        signin: id,
+        date: logdate
+      }
+
+        try {
+          connection.query(`SELECT * FROM meetings WHERE signin = ? AND date = ?`, [id, logdate], function (error, results, fields1) {
+              if (error) throw error;
+              if(results.length === 1) {
+                res.send('You are already signed in for this meeting!')
+              } else {
+                connection.query(`INSERT INTO meetings SET ?`, data, function (error, results, fields1) {
+                  if (error) throw error;
+                  res.send("You have been checked in to the meeting!");
+                  }
+                );
+              }
+            }
+          );
+        } catch (exception_var) {
+          console.log("Error");
+        }
+    }
+
+    if(type == 'new') {
+
+      const fname = req.body.fname
+      const lname = req.body.lname
+      const callsign = req.body.callsign
+      const email = req.body.email
+      const phone = req.body.phone
+      let d = new Date()
+      let logdate = d.toISOString().split('T')[0]
+
+      let getsuffix = (call) => {
+        try {
+          const suffix = call.replace(/^\D+/, '').substring(1);
+        console.log(suffix)
+        if(call !== ""){
+          return suffix;
+        }else {
+          return ''
+        }
+        } catch {
+          return ""
+        }
+      }
+
+      let data = {
+        fname: fname,
+        lname: lname,
+        callsign: callsign,
+        email: email,
+        phone: phone,
+        suffix: getsuffix(callsign)
+      }
+
+      console.log(data)
+
+      connection.query('SELECT id FROM signin_list WHERE fname = ? AND lname = ? AND callsign = ?',
+        [fname, lname, callsign],
+        (error, results) => {
+          if (error) throw error;
+
+          if (results.length === 0) {
+            // Row doesn't exist in signin_list, so insert it
+            connection.query('INSERT INTO signin_list SET ?', data, (error, insertResults) => {
+              if (error) throw error;
+
+              const signinId = insertResults.insertId;
+
+              // Step 2: Check if the row exists in meetings
+              connection.query('SELECT id FROM meetings WHERE signin = ? AND date = ?', [signinId, logdate], (error, meetingResults) => {
+                if (error) throw error;
+
+                if (meetingResults.length === 0) {
+                  // Row doesn't exist in meetings, so insert it
+                  let data = {signin: signinId, date: logdate}
+                  connection.query('INSERT INTO meetings SET ?', data, (error) => {
+                    if (error) throw error;
+                    res.send('You have been signed into the meeting!')
+                  });
+                } else {
+                  res.send('You are already signed into meetings');
+                }
+              });
+            });
+          } else {
+            // Row already exists in signin_list, so check if it exists in meetings
+            const signinId = results[0].id;
+            connection.query('SELECT id FROM meetings WHERE signin = ? AND date = ?', [signinId, logdate], (error, meetingResults) => {
+              if (error) throw error;
+
+              if (meetingResults.length === 0) {
+                // Row doesn't exist in meetings, so insert it
+                
+                connection.query('INSERT INTO meetings SET ?', [signinId, logdate], (error) => {
+                  if (error) throw error;
+                  res.send('You have been signed into the meeting!')
+                });
+              } else {
+                res.send('You are already signed into meetings');
+              }
+            });
+          }
+        });
+
+  }
+
+});
+
+app.get("/signin-count", (req, res) => {
+  let d = new Date()
+  let logdate = d.toISOString().split('T')[0]
+  try {
+    connection.query(`SELECT COUNT(signin) AS occurrences FROM meetings WHERE date = ? GROUP BY date`, [logdate], function (error, results, fields1) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  } catch (exception_var) {
+    console.log("Error");
+  }
+});
 
 
 

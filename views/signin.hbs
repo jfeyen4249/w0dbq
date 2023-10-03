@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+      <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRARC Meeting Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+    <style>
+        dialog::backdrop {
+            background-color: #1f1d1df1;
+        }
+
+        dialog{
+            width: 50vw;
+            height: 70vh;
+        }
+    </style>
+</head>
+{{!-- bg-gradient-to-r from-cyan-500 to-blue-500 --}}
+<body class="bg-gray-800 h-screen flex items-center justify-center">
+
+   <div class="bg-white p-8 rounded-lg shadow-md w-5/6 h-1/2 shadow-gray-700">
+    <h1 class="text-5xl font-semibold mb-10 text-center">GRARC Meeting Sign In</h1>
+
+    <!-- Counter -->
+    <div id="counter" class="absolute top-0 right-0 bg-white text-gray-800 text-4xl rounded-lg px-2 py-1 mr-10 mt-5 p-15">
+        <p>Total Count: <span id="counterValue">0</span></p>
+    </div>
+
+    <div class="mb-4">
+        <label for="callsign-list" class="block text-sm font-medium text-gray-700 mb-2">Select a Callsign</label>
+        <select id="callsign-list" name="callsign" class="w-full border rounded-lg px-3 text-center py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-300 text-5xl mb-2">
+        </select>
+    </div>
+
+    <div class="flex justify-between">
+        <button class="w-1/2 bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 mr-5 h-24" onclick="openDialog()">New Entry</button> <br>
+        <button class="w-1/2 bg-green-500 text-white rounded-lg py-2 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 ml-5" onclick="signin()">Sign In</button>
+    </div>
+</div>
+
+
+    <dialog id="add">
+        
+        <div>
+
+                <div flex justify-center>
+                    <img src="/cal/img/default.webp" class="add-img " id="addpic" alt="">
+                    </div>
+
+                <div>
+                    <div class="flex justify-center mb-30 p-10">
+                        <p></p>
+                    </div>
+                
+                    <div class="flex justify-center mt-10">
+                        <input type="text" placeholder="First Name" id="fname" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-half text-center mr-2">
+                        <input type="text" placeholder="Last Name" id="lname" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-half text-center">                        
+                    </div>
+
+                    <div class="flex justify-center mt-2">
+                       <input type="text" placeholder="Callsign" id="callsign" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-3/4 text-center">
+                    </div>
+
+                    {{!-- <div class="flex justify-center mt-2">
+                       <input type="text" placeholder="Email Address" id="email" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-half text-center">
+                    </div> --}}
+
+                    <div class="flex justify-center mt-2">
+                        <input type="text" placeholder="Email Address" id="email" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-half text-center  mr-2">
+                       <input type="text" placeholder="Phone Number" id="phone" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-half text-center">
+                    </div>
+                    
+                    
+                    <div class="flex justify-center mt-10">
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-md  focus:outline-none mr-5" onclick="newsignin()" id="addbtn">Save</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md focus:outline-none" onclick="add.close()">Cancel</button>
+                        
+                    </div>
+                </div>
+            </div>
+        
+    </dialog>
+
+    <script>
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
+
+        
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        const dialog = document.getElementById("add");
+        const openDialog = () => {
+            dialog.showModal();  
+        }
+
+
+       function loadList() {
+        document.getElementById('callsign-list').innerHTML = ''
+            fetch(`/signin-list`, { headers: myHeaders })
+            .then(response => response.json())
+            .then(data => {
+                let optionsHTML = '<option value="">Please sign-in</option>'; // Initialize an empty string to store the options
+                for (let i = 0; i < data.length; i++) {
+                optionsHTML += `<option value="${data[i].id}">${data[i].fname} ${data[i].callsign}</option>`;
+                }
+
+                // Set the innerHTML once with the concatenated optionsHTML
+                document.getElementById('callsign-list').innerHTML = optionsHTML;
+            });
+             meetingCount()
+       }
+
+         function signin() {
+            let id = document.getElementById('callsign-list').value
+            fetch(`/signin`,  {method: 'POST', headers: myHeaders, body: JSON.stringify({type: 'member', id: id}), })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                loadList()
+            });
+        }
+
+        function newsignin() {
+            let fname = document.getElementById('fname')
+            let lname = document.getElementById('lname')
+            let callsign = document.getElementById('callsign')
+            let email = document.getElementById('email')
+            let phone = document.getElementById('phone')
+
+            if(fname.value == '') {
+                alert('Please Enter your first name')
+                return
+            }
+            if(lname.value == '') {
+                alert('Please Enter your last name')
+                return
+            }
+            if(email.value == '') {
+                alert('Please Enter your email address')
+                return
+            }
+            if(phone.value == '') {
+                alert('Please Enter your phone number')
+                return
+            }
+
+            fetch(`/signin`,  {
+                method: 'POST', 
+                headers: myHeaders, 
+                body: JSON.stringify({type: 'new', fname: fname.value, lname: lname.value, callsign: callsign.value, email: email.value, phone: phone.value})
+                })
+            .then(response => response.text())
+            .then(data => {
+               alert(data);
+                fname.value = ''
+                lname.value = ''
+                callsign.value = ''
+                email.value = ''
+                phone.value = ''
+                add.close()
+               loadList()
+            });
+        }
+
+        function meetingCount() {
+            let counter = document.getElementById('counterValue')
+            fetch(`/signin-count`, { headers: myHeaders })
+            .then(response => response.json())
+            .then(data => {
+               
+                counter.innerHTML = `${data[0].occurrences}` 
+            });
+        }
+
+        setInterval(meetingCount, 15000);
+
+
+        loadList()
+    </script>
+</body>
+</html>
