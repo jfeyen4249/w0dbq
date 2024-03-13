@@ -3,7 +3,7 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@mailchimp/mailchimp_marketing": "^3.0.80",
     "@sendgrid/mail": "^7.7.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "buffer": "^6.0.3",
     "cjs": "^0.0.11",
