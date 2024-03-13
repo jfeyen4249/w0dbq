@@ -10,7 +10,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "express-handlebars": "^7.1.0",
+    "express-handlebars": "^7.1.2",
     "gmail-nodemailer-transport": "^3.0.2",
     "gmail-sender-oauth": "^1.0.5",
     "google-auth-library": "^8.9.0",
